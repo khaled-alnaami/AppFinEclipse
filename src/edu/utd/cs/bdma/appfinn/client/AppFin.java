@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class AppFin implements EntryPoint {
 
-//	private String link = "http://127.0.0.1:8888/appfin/";
+/////	private String link = "http://127.0.0.1:8888/appfin/";
 	private String link = "http://127.0.0.1:8080/appfin/";
 	private String dataDir = "/data/kld/android_apps_project/app_fingerprinting/";
 	String [] folderNames = new String[]{"d"};
