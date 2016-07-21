@@ -1,0 +1,183 @@
+/* Formatting specific to the AppFin application */
+body {
+  padding: 50px;
+}
+
+/* Big Data Lab */ 
+h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  font-family: "Times New Roman", Georgia, serif;
+  color: #ce5c00;
+  margin: auto;
+  text-align: left;
+}
+
+/* UTD */ 
+h2 {
+  font-size: 2.5em;
+  font-weight: normal;
+  font-family: "Times New Roman", Georgia, serif;
+  color: #356e2b;
+  margin: auto;
+  text-align: left;
+}
+
+/* AppFin */
+h3 {
+  font-size: 3em;
+  font-weight: bold;
+  font-family: "Times New Roman", Georgia, serif;
+  color: #2e3436;
+  margin: 40px 0px 70px;
+  text-align: center;
+ /* border: 3px solid #2e3436;
+  display: inline; */
+  
+}
+
+/* app list flex table header row */     
+.listHeader {
+  background-color: #008000;  
+  color: white;
+  font-size: 250%;
+  font-style: italic;
+}
+
+/* app list flex table */
+.watchList {
+  border: 1px solid silver;
+}
+
+/* parameter flex table */
+.gwt-VerticalPanel-parameterList {
+  margin-bottom:6px;
+  margin-right: 100px;
+}
+
+/* add app panel */
+.addPanel {
+  margin: 10px 0px 15px 0px;
+}
+
+/* centers a panel */
+.center {
+ margin: auto
+}
+
+/* sizes a panel */
+.size {
+ height: 500px;
+ width: 500px;
+}
+
+/* formats login labels */
+.gwt-Label-loginLabel { 
+  font-size: 125%; 
+  font-family: "Times New Roman", Georgia, serif;
+  color:black;
+  padding:5px;
+  margin:5px;
+}
+
+/* formats message labels */
+.gwt-Label-message { 
+  font-size: 125%; 
+  font-family: "Times New Roman", Georgia, serif;
+  color:black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+/* formats a text box */
+.gwt-TextBox {
+  font-family: "Times New Roman", Georgia, serif;
+}
+
+/* formats a password box */
+.gwt-PasswordTextBox {
+  font-family: "Times New Roman", Georgia, serif;
+}
+
+/* formats login button */
+.gwt-Button-login {
+  font-family: "Times New Roman", Georgia, serif;
+  font-size: 300%;
+  margin: center;
+  padding:5px 7px;
+  border:1px outset #ce5c00;
+  background:transparent url(images/hborder.png) repeat-x scroll 0px -27px;
+}
+
+.gwt-Button {
+  margin-top: 100px;
+}
+
+/* formats hyperlinks */
+.gwt-Hyperlink {
+  padding: 14px 50px;
+  text-align: center;
+  font-family: "Times New Roman", Georgia, serif;
+  margin-top: 200px;
+  font-size: 125%; 
+}
+
+/* formats title labels */
+.gwt-Label-titleLabel { 
+  font-size: 200%; 
+  font-family: "Times New Roman", Georgia, serif;
+  font-weight: bold;
+  color:#356e2b;
+  test-align:center;
+  padding:5px;
+  margin-bottom:50px; 
+}
+
+/* formats caption panels */
+fieldset {
+  border: 2px;
+  border-style: solid;
+  border-color: #008000;
+  font-size: 100%;
+  font-color: #000000;
+  margin: 10px 10px 10px 10px;
+  width: 300px;
+  height: 75px; 
+  font-family: "Times New Roman", Georgia, serif; 
+  font-weight: bold;
+}
+
+/* formats the login caption panel */
+.loginCP {
+  border: 2px;
+  border-style: solid;
+  border-color: #008000;
+  font-size: 200%;
+  font-color: #ce5c00;
+  display: inline;
+  width: auto;
+  height: auto;
+}
+
+/* formats the bar behind the tabs */
+.gwt-TabBar {
+  background-color: #f57900;
+}
+
+/* formats the content part of the tab panel */
+.gwt-TabPanelBottom {
+  border-color: #cc0000;
+  background-color: #ffffff;
+}
+
+#rotate {
+	width: 480px;
+	height: 320px;
+  border: 5px outset green;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}

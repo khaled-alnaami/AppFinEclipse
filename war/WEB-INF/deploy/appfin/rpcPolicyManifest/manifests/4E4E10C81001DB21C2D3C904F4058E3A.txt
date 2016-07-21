@@ -1,0 +1,2 @@
+serviceClass: edu.utd.cs.bdma.appfinn.client.GreetingService
+path: A480FC6EAE68E2C720ABC3E07494F3DD.gwt.rpc
