@@ -370,11 +370,7 @@ public class AppFin implements EntryPoint {
 		classifierList.addItem("Dyer Time", "10");
 		classifierList.addItem("Dyer VNG", "14");
 		classifierList.addItem("Dyer VNG++", "15");
-		classifierList.addItem("Adversarial", "21");
-		classifierList.addItem("Adversarial on Panchenko", "21");
-		classifierList.addItem("Adversarial on Tor", "31");
-		classifierList.addItem("Adversarial using Bloom Filter", "41");
-		classifierList.addItem("Adversarial on Panchenko using Bloom Filter", "101");
+		classifierList.addItem("Bi-Directional", "23");
 
 		// Creates a drop down for defenses
 		defenseList.clear();
