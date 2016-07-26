@@ -1,7 +1,9 @@
 package edu.utd.cs.bdma.appfinn.client;
 
-import java.io.File;
 import java.util.ArrayList;
+
+import com.google.gwt.http.client.Request;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -14,6 +16,10 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -56,7 +62,9 @@ public class AppFin implements EntryPoint {
 	private CaptionPanel trialsCP = new CaptionPanel("Number of Trials");
 
 	private VerticalPanel loginParentPanel = new VerticalPanel();
+	private VerticalPanel loginTextPanel = new VerticalPanel();
 	private VerticalPanel loginPanel = new VerticalPanel();
+	private VerticalPanel loginButtonPanel = new VerticalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private VerticalPanel displayPanel = new VerticalPanel();
 	private VerticalPanel testPanel = new VerticalPanel();
@@ -169,12 +177,18 @@ public class AppFin implements EntryPoint {
 		passPanel.add(passTextBox);
 
 		// setup login panel
-		loginPanel.add(userPanel);
-		loginPanel.add(passPanel);
+		loginTextPanel.add(userPanel);
+		loginTextPanel.add(passPanel);
+		loginTextPanel.addStyleName("center");
+		
 		loginButton.addStyleDependentName("login");
-		loginPanel.add(loginButton);
+		loginButtonPanel.add(loginButton);
+		loginButtonPanel.addStyleName("center");
+		
+		loginPanel.add(loginTextPanel);
+		loginPanel.add(loginButtonPanel);
 		loginPanel.addStyleName("center");
-
+		
 		// setup caption and parent panels
 		loginCP.add(loginPanel);
 		loginCP.addStyleName("loginCP");
@@ -739,7 +753,7 @@ public class AppFin implements EntryPoint {
 	public void requestSocket(String apps){
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "the servlet url"+apps);
         try {
-            Request response = builder.sendRequest(null, new RequestCallback() {
+           Request response = builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
                     collectionProgress.setText("request failed "+exception.toString());
                 }
