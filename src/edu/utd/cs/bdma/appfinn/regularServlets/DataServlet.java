@@ -12,15 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DataServlet extends HttpServlet{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+		/***
 		Socket socket = null;
 //	    OutputStreamWriter outToServer;
 	    String serverMsg = null;
 	    String inFromServerLine = "";
 	    String input = request.getParameter("script");
-	    /*** 
+	    
 		try {
 			// contacting the server socket
 			if (input.startsWith("python")){
@@ -76,7 +82,9 @@ public class DataServlet extends HttpServlet{
 				e.printStackTrace();
 			}
 	    }
-		***/
+		
 		response.getWriter().write(serverMsg);
+		***/
+		response.getWriter().write("salam");
 	}
 }

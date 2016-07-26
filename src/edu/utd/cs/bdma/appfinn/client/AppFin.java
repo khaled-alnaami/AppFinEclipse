@@ -637,7 +637,7 @@ errorPanel.add(testLabel);
 		
 		// call the server which implements the socket
 		//call = "python mainBiDirectionLatest.py -C 3 -k 20 -c 0 -t 16 -T 4 -N 2000 -d 4 -n 1 -D 1 -E 1 -F 1 -G 1 -H 1 -I 1 -A 1 -V 0 -b 600";
-		
+		/***
 		greetingService.greetServer(call, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 
@@ -647,13 +647,13 @@ errorPanel.add(testLabel);
 
 			}
 		});
-		/***
+		***/
 		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
 		String script = "?script="+call;
 		String url = link + "data" + script;
 		
 		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
-		***/
+		
 	}
 
 	/**
