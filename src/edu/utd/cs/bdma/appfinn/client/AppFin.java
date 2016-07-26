@@ -4,10 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;		
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
@@ -181,7 +185,11 @@ public class AppFin implements EntryPoint {
 		RootPanel.get("test").add(loginParentPanel);
 
 		// Move cursor focus to the user box.
-		userTextBox.setFocus(true);
+		Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+			public void execute() {
+				userTextBox.setFocus(true);
+			}
+		});
 
 		// Listen for mouse events on the Login button.
 		loginButton.addClickHandler(new ClickHandler() {
@@ -197,6 +205,23 @@ public class AppFin implements EntryPoint {
 				}
 			}
 		});
+		
+		// Listen for keyboard events on the Login button.
+	      passTextBox.addKeyDownHandler(new KeyDownHandler() {
+	        public void onKeyDown(KeyDownEvent event) {
+	          if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+	        	  final String user = userTextBox.getText().toUpperCase().trim();
+	        	  final String pass = passTextBox.getValue().toUpperCase().trim();
+	        	  if (user == "USER" && pass == "PASS") {
+	        		  RootPanel.get("test").remove(loginParentPanel);
+	        		  onTabs();
+	        	  } else {
+	        		  Window.alert("Not a valid username or password.");
+	        		  Window.Location.reload();
+	        	  }
+	          }
+	        }
+	      });
 	}
 
 	/**
