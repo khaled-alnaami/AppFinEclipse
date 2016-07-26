@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.DivElement;		
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -29,8 +31,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class AppFin implements EntryPoint {
 
-//	private String link = "http://127.0.0.1:8888/appfin/";
-	private String link = "http://127.0.0.1:8080/appfin/";
+/////	private String link = "http://127.0.0.1:8888/appfin/";
+//	private String link = "http://127.0.0.1:8080/appfin/";
+//	private String link = Window.Location.getHostName() + ":" + Window.Location.getPort() + "/";
+	
 	private String dataDir = "/data/kld/android_apps_project/app_fingerprinting/";
 	String [] folderNames = new String[]{"d"};
 	private String appsDataFolder = "appsData/";
@@ -209,30 +213,17 @@ public class AppFin implements EntryPoint {
 		// setup home tab
 		tabs.insert(homePanel, "Home", 0);
 		
+		// click handler for the Home tab
+		homeClickHandler();
+
+		
+		
 		//request server for array of foldernames, string.splti
 		//File folder = new File(dataDir);
 		
 //		folderList.addItem("here " + folderNames[0]);
 		
-		greetingService.getFileNames(new AsyncCallback<String[]>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				folderNames[0] = "inside onFailure";
-				folderList.addItem("inside onFailure");
-			}
-			@Override
-			public void onSuccess(String[] result) {
-				// TODO Auto-generated method stub
-				folderNames = result;
-//				folderNames[0] = result[0];
-//				folderNames[0] = "inside onsucess";
-//				folderList.addItem(folderNames[0]);
-				for(String name : folderNames){
-					folderList.addItem(name);
-				}
-			}
-		});
+		getFolderNames();
 		
 		
 //		for(String name : folderNames){
@@ -246,8 +237,12 @@ public class AppFin implements EntryPoint {
 				if(folderName == ""){
 					return;
 				}
+//				String fileInfo = "?foldername="+appsDataFolder+folderName;
 				String fileInfo = "?foldername="+folderName;
+//				private String link = "http://127.0.0.1:8080/appfin/";
+				String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
 				String url = link + "download" + fileInfo;
+				
 				Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
 				}
 		});
@@ -288,25 +283,48 @@ public class AppFin implements EntryPoint {
 		//get url address from server
 		String url = "https://rtcxp.com/screen/?s=android_capture&p=utdbdma";
 		
-		//set up live display
-		displayPanel.add(new HTML("<h2 style=text-align:center;>Live Display</h2>"));
-		displayPanel.add(new HTML("<div id=container><iframe id=embed src="+url+" scrolling=no></iframe></div>"));
+/***		
+		// setup display table
 		
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		//displayPanel.add(new HTML("</br>"));
+//		displayPanel.add(new HTML("<iframe id = rotate src = \""+url+"\"></iframe>"));
+		displayPanel.add(new HTML("<iframe src = \""+url+"\"></iframe>"));
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		displayPanel.add(new HTML("</br>"));
+		//displayPanel.setStyleName("display", true);
 		
 		HorizontalPanel container = new HorizontalPanel();
+		container.add(flexTable);
 		
+		container.add(collectionProgress); // khaled
+		container.add(displayPanel);
+		container.setStyleName("wr", true);
+		container.setCellWidth(flexTable, "50%");
+		container.setCellWidth(displayPanel, "50%");
+***/		
+		//set up live display		
+		displayPanel.add(new HTML("<h2 style=text-align:center;>Live Display</h2>"));		
+		displayPanel.add(new HTML("<div id=container><iframe id=embed src="+url+" scrolling=no></iframe></div>"));
+		HorizontalPanel container = new HorizontalPanel();
 		container.add(flexTable);
 		container.add(displayPanel);
 		container.setCellWidth(flexTable, "50%");
 		container.setCellWidth(displayPanel, "50%");
 		
-
 		// setup selection panel
 		appSelect.add(appList);
 		appSelect.add(addAppButton);
 		appSelect.add(doneButton);
 		appSelect.add(clearButton);
 		appSelect.add(refreshButton);
+//		appSelect.add(new HTML("<h2 style='position:relative;left:250px'>Live Display</h2>"));
 		appSelect.add(collectionProgress);
 		appSelect.addStyleName("addPanel");
 
@@ -344,16 +362,15 @@ public class AppFin implements EntryPoint {
 				selectedItems.clear();
 			}
 		});
-		
-		refreshButton.addClickHandler(new ClickHandler() {
+		refreshButton.addClickHandler(new ClickHandler() {		
 			
-			@Override
-			public void onClick(ClickEvent event) {
-				DivElement frame = (DivElement) Document.get().getElementById("embed");
-				frame.setAttribute("src", frame.getAttribute("src"));
-			}
-		});
-
+		@Override		
+		public void onClick(ClickEvent event) {		
+			DivElement frame = (DivElement) Document.get().getElementById("embed");		
+			frame.setAttribute("src", frame.getAttribute("src"));		
+		  }		
+	    });
+		
 		/** Data Analytics Tab **/
 
 		// Creates a drop down for classifiers
@@ -369,13 +386,6 @@ public class AppFin implements EntryPoint {
 		classifierList.addItem("Dyer VNG", "14");
 		classifierList.addItem("Dyer VNG++", "15");
 		classifierList.addItem("Bi-Directional", "23");
-		/*
-		classifierList.addItem("Adversarial", "21");
-		classifierList.addItem("Adversarial on Panchenko", "21");
-		classifierList.addItem("Adversarial on Tor", "31");
-		classifierList.addItem("Adversarial using Bloom Filter", "41");
-		classifierList.addItem("Adversarial on Panchenko using Bloom Filter", "101");
-		*/
 
 		// Creates a drop down for defenses
 		defenseList.clear();
@@ -627,6 +637,7 @@ errorPanel.add(testLabel);
 		
 		// call the server which implements the socket
 		//call = "python mainBiDirectionLatest.py -C 3 -k 20 -c 0 -t 16 -T 4 -N 2000 -d 4 -n 1 -D 1 -E 1 -F 1 -G 1 -H 1 -I 1 -A 1 -V 0 -b 600";
+		
 		greetingService.greetServer(call, new AsyncCallback<String>() {
 			public void onFailure(Throwable caught) {
 
@@ -636,6 +647,13 @@ errorPanel.add(testLabel);
 
 			}
 		});
+		/***
+		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+		String script = "?script="+call;
+		String url = link + "data" + script;
+		
+		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+		***/
 	}
 
 	/**
@@ -699,5 +717,41 @@ errorPanel.add(testLabel);
 			return false;
 			
 		}
+	}
+	
+	// To get pcap folder names
+	void getFolderNames(){
+		greetingService.getFileNames(new AsyncCallback<String[]>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				folderNames[0] = "inside onFailure";
+				folderList.addItem("inside onFailure");
+			}
+			@Override
+			public void onSuccess(String[] result) {
+				// TODO Auto-generated method stub
+				folderNames = result;
+				folderList.clear();
+				for(String name : folderNames){
+					folderList.addItem(name);
+				}
+			}
+		});
+	}
+	
+	void homeClickHandler(){
+		tabs.addSelectionHandler(new SelectionHandler<Integer>() {
+
+			@Override
+			public void onSelection(SelectionEvent<Integer> event) {
+				// TODO Auto-generated method stub
+			    if (event.getSelectedItem() == 0) {
+				      // Code
+			    	getFolderNames();
+				    }
+				
+			}
+			});
 	}
 }
