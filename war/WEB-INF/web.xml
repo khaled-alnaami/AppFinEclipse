@@ -26,6 +26,16 @@
     <url-pattern>/download</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+      <servlet-name>dataServlet</servlet-name>
+      <servlet-class>edu.utd.cs.bdma.appfinn.regularServlets.DataServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+      <servlet-name>dataServlet</servlet-name>
+      <url-pattern>/data</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>AppFin.html</welcome-file>
