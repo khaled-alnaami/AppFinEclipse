@@ -66,6 +66,7 @@ public class AppFin implements EntryPoint {
 	private VerticalPanel loginPanel = new VerticalPanel();
 	private VerticalPanel loginButtonPanel = new VerticalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
+	private VerticalPanel collectPanel = new VerticalPanel();
 	private VerticalPanel displayPanel = new VerticalPanel();
 	private VerticalPanel testPanel = new VerticalPanel();
 	private VerticalPanel analyticsPanel = new VerticalPanel();
@@ -77,6 +78,7 @@ public class AppFin implements EntryPoint {
 	private HorizontalPanel userPanel = new HorizontalPanel();
 	private HorizontalPanel passPanel = new HorizontalPanel();
 	private HorizontalPanel appSelect = new HorizontalPanel();
+	private HorizontalPanel loadingPanel = new HorizontalPanel();
 	private VerticalPanel classifierSelect = new VerticalPanel();
 	private VerticalPanel defenseSelect = new VerticalPanel();
 	private VerticalPanel datasetSelect = new VerticalPanel();
@@ -320,42 +322,23 @@ public class AppFin implements EntryPoint {
 		flexTable.addStyleName("watchList");
 
 		
+		loadingPanel.add(new HTML("<image src='http://i16.photobucket.com/albums/b34/Andra1/gif%20images/c190997e.gif' alt='Loading Text'></image>"));
+		loadingPanel.add(new HTML("<p>The data is collecting. Please wait.</p>"));
+		loadingPanel.setVisible(false);
+		
+		collectPanel.add(loadingPanel);
+		collectPanel.add(flexTable);
+		
 		//get url address from server
 		String url = "https://rtcxp.com/screen/?s=android_capture&p=utdbdma";
 		
-/***		
-		// setup display table
-		
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		//displayPanel.add(new HTML("</br>"));
-//		displayPanel.add(new HTML("<iframe id = rotate src = \""+url+"\"></iframe>"));
-		displayPanel.add(new HTML("<iframe src = \""+url+"\"></iframe>"));
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		displayPanel.add(new HTML("</br>"));
-		//displayPanel.setStyleName("display", true);
-		
-		HorizontalPanel container = new HorizontalPanel();
-		container.add(flexTable);
-		
-		container.add(collectionProgress); // khaled
-		container.add(displayPanel);
-		container.setStyleName("wr", true);
-		container.setCellWidth(flexTable, "50%");
-		container.setCellWidth(displayPanel, "50%");
-***/		
 		//set up live display		
 		displayPanel.add(new HTML("<h2 style=text-align:center;>Live Display</h2>"));		
 		displayPanel.add(new HTML("<div id=container><iframe id=embed src="+url+" scrolling=no></iframe></div>"));
 		HorizontalPanel container = new HorizontalPanel();
-		container.add(flexTable);
+		container.add(collectPanel);
 		container.add(displayPanel);
-		container.setCellWidth(flexTable, "50%");
+		container.setCellWidth(collectPanel, "50%");
 		container.setCellWidth(displayPanel, "50%");
 		
 		// setup selection panel
@@ -364,8 +347,6 @@ public class AppFin implements EntryPoint {
 		appSelect.add(doneButton);
 		appSelect.add(clearButton);
 		appSelect.add(refreshButton);
-//		appSelect.add(new HTML("<h2 style='position:relative;left:250px'>Live Display</h2>"));
-		appSelect.add(collectionProgress);
 		appSelect.addStyleName("addPanel");
 
 		// setup collection tab
@@ -388,7 +369,10 @@ public class AppFin implements EntryPoint {
 		// done button response
 		doneButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				loadingPanel.setVisible(true);
 				onTesting();
+				loadingPanel.setVisible(false);
+				
 			}
 		});
 
@@ -764,14 +748,14 @@ public class AppFin implements EntryPoint {
         try {
            Request response = builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
-                    collectionProgress.setText("request failed "+exception.toString());
-					Window.alert("request failed "+exception.toString());
+    				openWindow("Request Failed", exception.toString());
+//					Window.alert("request failed "+exception.toString());
 //					Window.Location.reload();
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-                	collectionProgress.setText("request succeded "+response.getText());
-					Window.alert("request succeded "+response.getText());
+    				openWindow("Request Succeded", response.getText());
+//					Window.alert("request succeded "+response.getText());
 //					Window.Location.reload();
                 }
             });
@@ -791,20 +775,20 @@ public class AppFin implements EntryPoint {
         try {
            Request response = builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
-//                    collectionProgress.setText("request failed "+exception.toString());
-                	analyticsReplyLabel = new Label("request failed "+exception.toString());
-            		errorPanel.add(analyticsReplyLabel);
-            		analyticsPanel.add(errorPanel);
-					Window.alert("request succeded "+"request failed "+exception.toString());
+                     openWindow("Request Failed", exception.toString());
+                	//analyticsReplyLabel = new Label("request failed "+exception.toString());
+            		//errorPanel.add(analyticsReplyLabel);
+            		//analyticsPanel.add(errorPanel);
+					//Window.alert("request succeded "+"request failed "+exception.toString());
 //					Window.Location.reload();
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-//                	collectionProgress.setText("request succeded "+response.getText());
-                	analyticsReplyLabel = new Label("request succeded "+response.getText());
-            		errorPanel.add(analyticsReplyLabel);
-            		analyticsPanel.add(errorPanel);
-					Window.alert("request succeded "+"request succeded "+response.getText());
+                	openWindow("Request Succeded", response.getText());
+                	//analyticsReplyLabel = new Label("request succeded "+response.getText());
+            		//errorPanel.add(analyticsReplyLabel);
+            		//analyticsPanel.add(errorPanel);
+					//Window.alert("request succeded "+"request succeded "+response.getText());
 //					Window.Location.reload();
                 }
             });
@@ -848,4 +832,9 @@ public class AppFin implements EntryPoint {
 			}
 			});
 	}
+	
+	public static native void openWindow(String url, String message)/*-{
+		var myWindow = window.open(url, "_blank", "status=0,toolbar=0,menubar=0,location=0,width=200,height=100");
+		myWindow.document.write(message);
+	}-*/;
 }
