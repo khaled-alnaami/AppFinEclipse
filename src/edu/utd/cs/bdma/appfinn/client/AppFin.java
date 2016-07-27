@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -246,6 +247,7 @@ public class AppFin implements EntryPoint {
 	 */
 	@SuppressWarnings("deprecation")
 	private void onTabs() {
+		
 
 		// add to root
 		RootPanel.get("test").add(mainPanel);
@@ -559,9 +561,12 @@ public class AppFin implements EntryPoint {
 					}
 					analyticsPanel.add(errorPanel);
 			
-				} else
+				} else {
 					run();
-
+					TabBar barA = tabs.getTabBar();
+					barA.setTabEnabled(0, false);
+					barA.setTabEnabled(1, false);
+				}
 			}
 		});
 
