@@ -118,7 +118,8 @@ public class AppFin implements EntryPoint {
 	private Label numTrialsLabel = new Label("Trials");
 	
 	private Label collectionProgress = new Label("Progress ..."); // Khaled
-
+	private Label analyticsReplyLabel = null;
+	
 	private ListBox folderList = new ListBox();
 	private ListBox appList = new ListBox();
 	private ListBox classifierList = new ListBox();
@@ -678,11 +679,13 @@ public class AppFin implements EntryPoint {
 			}
 		});
 		***/
-		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
-		String script = "?script="+call;
-		String url = link + "data" + script;
+//		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+//		String script = "?script="+call;
+//		String url = link + "data" + script;
+//		
+//		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
 		
-		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+		requestSocket2(call);
 		
 	}
 
@@ -751,15 +754,58 @@ public class AppFin implements EntryPoint {
 	
 	//get method to servlet
 	public void requestSocket(String apps){
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, "the servlet url"+apps);
+		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+		String script = "?script="+apps;
+		String url = link + "data" + script;
+		
+//		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+		
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         try {
            Request response = builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
                     collectionProgress.setText("request failed "+exception.toString());
+					Window.alert("request failed "+exception.toString());
+//					Window.Location.reload();
                 }
 
                 public void onResponseReceived(Request request, Response response) {
                 	collectionProgress.setText("request succeded "+response.getText());
+					Window.alert("request succeded "+response.getText());
+//					Window.Location.reload();
+                }
+            });
+        } catch (RequestException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	//get method to servlet
+	public void requestSocket2(String call){
+		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+		String script = "?script="+call;
+		String url = link + "data" + script;
+		
+				
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+        try {
+           Request response = builder.sendRequest(null, new RequestCallback() {
+                public void onError(Request request, Throwable exception) {
+//                    collectionProgress.setText("request failed "+exception.toString());
+                	analyticsReplyLabel = new Label("request failed "+exception.toString());
+            		errorPanel.add(analyticsReplyLabel);
+            		analyticsPanel.add(errorPanel);
+					Window.alert("request succeded "+"request failed "+exception.toString());
+//					Window.Location.reload();
+                }
+
+                public void onResponseReceived(Request request, Response response) {
+//                	collectionProgress.setText("request succeded "+response.getText());
+                	analyticsReplyLabel = new Label("request succeded "+response.getText());
+            		errorPanel.add(analyticsReplyLabel);
+            		analyticsPanel.add(errorPanel);
+					Window.alert("request succeded "+"request succeded "+response.getText());
+//					Window.Location.reload();
                 }
             });
         } catch (RequestException e) {

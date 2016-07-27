@@ -20,12 +20,13 @@ public class DataServlet extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		/***
+		
 		Socket socket = null;
 //	    OutputStreamWriter outToServer;
 	    String serverMsg = null;
 	    String inFromServerLine = "";
 	    String input = request.getParameter("script");
+	    System.out.println("input passed: " + input);
 	    
 		try {
 			// contacting the server socket
@@ -36,6 +37,7 @@ public class DataServlet extends HttpServlet{
 			} else {
 				// data collection
 				// to Main.java
+				System.out.println("inside socket");
 				socket = new Socket("127.0.0.1", 9999);
 			}
 			
@@ -62,6 +64,7 @@ public class DataServlet extends HttpServlet{
 				}
 			}
 			
+			
 //		    socket.setSoTimeout(0);
 //			inFromServerLine = inFromServer.readLine();
 //
@@ -84,7 +87,7 @@ public class DataServlet extends HttpServlet{
 	    }
 		
 		response.getWriter().write(serverMsg);
-		***/
-		response.getWriter().write("salam");
+		
+//		response.getWriter().write("salam");
 	}
 }
