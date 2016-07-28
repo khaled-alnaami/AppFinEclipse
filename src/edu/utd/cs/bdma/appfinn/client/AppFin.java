@@ -372,9 +372,12 @@ public class AppFin implements EntryPoint {
 		doneButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				loadingPanel.setVisible(true);
-				onTesting();
-				loadingPanel.setVisible(false);
-				
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					public void execute() {
+						onTesting();
+						loadingPanel.setVisible(false);
+					}
+				});
 			}
 		});
 
