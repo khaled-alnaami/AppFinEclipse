@@ -779,7 +779,7 @@ public class AppFin implements EntryPoint {
                 	//analyticsReplyLabel = new Label("request failed "+exception.toString());
             		//errorPanel.add(analyticsReplyLabel);
             		//analyticsPanel.add(errorPanel);
-					//Window.alert("request succeded "+"request failed "+exception.toString());
+					//Window.alert("request failed "+exception.toString());
 //					Window.Location.reload();
                 }
 
@@ -788,7 +788,7 @@ public class AppFin implements EntryPoint {
                 	//analyticsReplyLabel = new Label("request succeded "+response.getText());
             		//errorPanel.add(analyticsReplyLabel);
             		//analyticsPanel.add(errorPanel);
-					//Window.alert("request succeded "+"request succeded "+response.getText());
+					//Window.alert("request succeded "+response.getText());
 //					Window.Location.reload();
                 }
             });

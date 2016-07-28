@@ -48,6 +48,7 @@ public class DataServlet extends HttpServlet{
 //			outToServer.write(input, 0, input.length());
 //			outToServer.flush();
 	        PS.println(input);
+	        PS.flush();
 	        
 			// read
 			// start reading msg from server
