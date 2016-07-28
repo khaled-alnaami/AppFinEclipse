@@ -28,6 +28,9 @@ public class DataServlet extends HttpServlet{
 	    String input = request.getParameter("script");
 	    System.out.println("input passed: " + input);
 	    
+	    PrintStream PS = null;
+	    BufferedReader inFromServer = null;
+	    
 		try {
 			// contacting the server socket
 			if (input.startsWith("python")){
@@ -43,16 +46,17 @@ public class DataServlet extends HttpServlet{
 			
 			
 //			outToServer =new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
-			PrintStream PS = new PrintStream(socket.getOutputStream());
+			PS = new PrintStream(socket.getOutputStream());
 	        // forwarding the apps to the server
 //			outToServer.write(input, 0, input.length());
 //			outToServer.flush();
 	        PS.println(input);
+	        PS.println("\n");
 	        PS.flush();
 	        
 			// read
 			// start reading msg from server
-		    BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		    inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			
 			
 			socket.setSoTimeout(0); 
@@ -60,7 +64,7 @@ public class DataServlet extends HttpServlet{
 				System.out.println(inFromServerLine);
 				serverMsg = inFromServerLine;
 				if (serverMsg.startsWith("End")){
-					inFromServer.close();
+					//inFromServer.close();
 					break;
 				}
 			}
@@ -81,6 +85,8 @@ public class DataServlet extends HttpServlet{
 		} finally {
 	        try {
 				socket.close();
+				inFromServer.close();
+				PS.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

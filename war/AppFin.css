@@ -171,6 +171,9 @@ fieldset {
   background-color: #ffffff;
 }
 
+.pointer{
+	pointer-events: none;
+}
 
 #container {
 	border: 4px inset green;

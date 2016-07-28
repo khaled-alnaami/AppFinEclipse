@@ -325,8 +325,9 @@ public class AppFin implements EntryPoint {
 		flexTable.addStyleName("watchList");
 
 		
-		loadingPanel.add(new HTML("<image src='http://i16.photobucket.com/albums/b34/Andra1/gif%20images/c190997e.gif' alt='Loading Text'></image>"));
-		loadingPanel.add(new HTML("<p>The data is collecting. Please wait.</p>"));
+//		loadingPanel.add(new HTML("<image src='http://i16.photobucket.com/albums/b34/Andra1/gif%20images/c190997e.gif' alt='Loading Text'></image>"));
+		loadingPanel.add(new HTML("<image src='images/hourglass.gif' alt='Loading Text'></image>"));
+		loadingPanel.add(new HTML("<p>The request is being processed. Please wait.</p>"));
 		loadingPanel.setVisible(false);
 		
 		collectPanel.add(loadingPanel);
@@ -355,7 +356,7 @@ public class AppFin implements EntryPoint {
 		// setup collection tab
 		testPanel.add(appSelect);
 		testPanel.add(container);
-		tabs.insert(testPanel, "Data Collection", 1);
+		tabs.insert(testPanel, "Data Collection/Dynamic Analysis", 1);
 
 		// add button response
 		addAppButton.addClickHandler(new ClickHandler() {
@@ -372,11 +373,13 @@ public class AppFin implements EntryPoint {
 		// done button response
 		doneButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				collectPanel.add(loadingPanel);
 				loadingPanel.setVisible(true);
+				tabs.setStyleName("pointer");
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					public void execute() {
 						onTesting();
-						loadingPanel.setVisible(false);
+						
 					}
 				});
 			}
@@ -567,9 +570,9 @@ public class AppFin implements EntryPoint {
 			
 				} else {
 					run();
-					TabBar barA = tabs.getTabBar();
-					barA.setTabEnabled(0, false);
-					barA.setTabEnabled(1, false);
+//					TabBar barA = tabs.getTabBar();
+//					barA.setTabEnabled(0, false);
+//					barA.setTabEnabled(1, false);
 				}
 			}
 		});
@@ -610,6 +613,7 @@ public class AppFin implements EntryPoint {
 	 * Runs test for data collection.
 	 */
 	private void onTesting() {
+		loadingPanel.setVisible(true);
 		apps = "";
 		//reformat into ? parameters
 		for (String each : selectedItems) {
@@ -617,6 +621,7 @@ public class AppFin implements EntryPoint {
 			apps += ";";
 		}
 		requestSocket(apps);
+
 	}
 
 	/**
@@ -677,7 +682,9 @@ public class AppFin implements EntryPoint {
 //		String url = link + "data" + script;
 //		
 //		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
-		
+		analyticsPanel.add(loadingPanel);
+		loadingPanel.setVisible(true);
+		tabs.setStyleName("pointer");
 		requestSocket2(call);
 		
 	}
@@ -747,6 +754,8 @@ public class AppFin implements EntryPoint {
 	
 	//get method to servlet
 	public void requestSocket(String apps){
+		loadingPanel.setVisible(true);
+		
 		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
 		String script = "?script="+apps;
 		String url = link + "data" + script;
@@ -757,15 +766,19 @@ public class AppFin implements EntryPoint {
         try {
            Request response = builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
-    				openWindow("Request Failed", exception.toString());
-//					Window.alert("request failed "+exception.toString());
+//    				openWindow("Request Failed", exception.toString());
+					Window.alert("Request failed. "+exception.toString());
 //					Window.Location.reload();
+    				loadingPanel.setVisible(false);
+    				tabs.removeStyleName("pointer");
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-    				openWindow("Request Succeded", response.getText());
-//					Window.alert("request succeded "+response.getText());
+//    				openWindow("Request Succeded", response.getText());
+					Window.alert("Request succeded. "+response.getText());
 //					Window.Location.reload();
+    				loadingPanel.setVisible(false);
+    				tabs.removeStyleName("pointer");
                 }
             });
         } catch (RequestException e) {
@@ -784,20 +797,24 @@ public class AppFin implements EntryPoint {
         try {
            Request response = builder.sendRequest(null, new RequestCallback() {
                 public void onError(Request request, Throwable exception) {
-                     openWindow("Request Failed", exception.toString());
+//                     openWindow("Request Failed", exception.toString());
                 	//analyticsReplyLabel = new Label("request failed "+exception.toString());
             		//errorPanel.add(analyticsReplyLabel);
             		//analyticsPanel.add(errorPanel);
-					//Window.alert("request failed "+exception.toString());
+					Window.alert("Request failed. "+exception.toString());
+					loadingPanel.setVisible(false);
+					tabs.removeStyleName("pointer");
 //					Window.Location.reload();
                 }
 
                 public void onResponseReceived(Request request, Response response) {
-                	openWindow("Request Succeded", response.getText());
+//                	openWindow("Request Succeded", response.getText());
                 	//analyticsReplyLabel = new Label("request succeded "+response.getText());
             		//errorPanel.add(analyticsReplyLabel);
             		//analyticsPanel.add(errorPanel);
-					//Window.alert("request succeded "+response.getText());
+					Window.alert("Request succeded. "+response.getText());
+					loadingPanel.setVisible(false);
+					tabs.removeStyleName("pointer");
 //					Window.Location.reload();
                 }
             });
