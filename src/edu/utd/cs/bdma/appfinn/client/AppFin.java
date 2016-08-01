@@ -607,6 +607,10 @@ public class AppFin implements EntryPoint {
 				Window.Location.reload();
 			}
 		});
+		
+		// docs tab
+		PageDocs pageDocs = new PageDocs();
+		tabs.insert(pageDocs, "Documentation", 3);
 	}
 
 	/**

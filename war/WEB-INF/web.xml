@@ -26,6 +26,16 @@
     <url-pattern>/download</url-pattern>
   </servlet-mapping>
   
+    <servlet>
+    <servlet-name>downloadServlet2</servlet-name>
+    <servlet-class>edu.utd.cs.bdma.appfinn.server.DownloadServlet2</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>downloadServlet2</servlet-name>
+    <url-pattern>/downloadDocs</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
       <servlet-name>dataServlet</servlet-name>
       <servlet-class>edu.utd.cs.bdma.appfinn.regularServlets.DataServlet</servlet-class>
