@@ -28,7 +28,7 @@ public class PageAbout extends Composite {
 		
 		vPanel.add(new HTML("<h1> Smart Phone Apps Fingerprinting </h1>"
 							+ "<p>"
-							+ "Apps Data Management is a tool designed by the UT Dallas Big Data Analytics and Management lab <br> which is directed by <a href=\"https://www.utdallas.edu/~lkhan/\" target=\"_blank\" >Professor Latifu Khan</a>."
+							+ "Apps Data Management is a tool designed by the UT Dallas Big Data Analytics and Management lab <br> which is directed by <a href=\"https://www.utdallas.edu/~lkhan/\" target=\"_blank\" >Professor Latifur Khan</a>."
 							+ "</p>"
 							
 							+ "<p>"
