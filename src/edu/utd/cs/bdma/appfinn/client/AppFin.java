@@ -611,6 +611,9 @@ public class AppFin implements EntryPoint {
 		// docs tab
 		PageDocs pageDocs = new PageDocs();
 		tabs.insert(pageDocs, "Documentation", 3);
+		
+		PageAbout pageAbout = new PageAbout();
+		tabs.insert(pageAbout, "About", 4);
 	}
 
 	/**
