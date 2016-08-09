@@ -1,54 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-         version="2.5"
-         xmlns="http://java.sun.com/xml/ns/javaee">
+	version="2.5" xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>edu.utd.cs.bdma.appfinn.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/appfin/greet</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>downloadServlet</servlet-name>
-    <servlet-class>edu.utd.cs.bdma.appfinn.server.DownloadServlet</servlet-class>
-  </servlet>
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>greetServlet</servlet-name>
+		<servlet-class>edu.utd.cs.bdma.appfinn.server.GreetingServiceImpl</servlet-class>
+	</servlet>
 
-  <servlet-mapping>
-    <servlet-name>downloadServlet</servlet-name>
-    <url-pattern>/download</url-pattern>
-  </servlet-mapping>
-  
-    <servlet>
-    <servlet-name>downloadServlet2</servlet-name>
-    <servlet-class>edu.utd.cs.bdma.appfinn.server.DownloadServlet2</servlet-class>
-  </servlet>
+	<servlet-mapping>
+		<servlet-name>greetServlet</servlet-name>
+		<url-pattern>/appfin/greet</url-pattern>
+	</servlet-mapping>
 
-  <servlet-mapping>
-    <servlet-name>downloadServlet2</servlet-name>
-    <url-pattern>/downloadDocs</url-pattern>
-  </servlet-mapping>
-  
-  <servlet>
-      <servlet-name>dataServlet</servlet-name>
-      <servlet-class>edu.utd.cs.bdma.appfinn.regularServlets.DataServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-      <servlet-name>dataServlet</servlet-name>
-      <url-pattern>/data</url-pattern>
-  </servlet-mapping>
-  
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>AppFin.html</welcome-file>
-  </welcome-file-list>
+	<servlet>
+		<servlet-name>downloadServlet</servlet-name>
+		<servlet-class>edu.utd.cs.bdma.appfinn.server.DownloadServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>downloadServlet</servlet-name>
+		<url-pattern>/download</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>downloadServlet2</servlet-name>
+		<servlet-class>edu.utd.cs.bdma.appfinn.server.DownloadServlet2</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>downloadServlet2</servlet-name>
+		<url-pattern>/downloadDocs</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>dataServlet</servlet-name>
+		<servlet-class>edu.utd.cs.bdma.appfinn.regularServlets.DataServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>dataServlet</servlet-name>
+		<url-pattern>/data</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<servlet-name>databaseServlet</servlet-name>
+		<servlet-class>edu.utd.cs.bdma.appfinn.server.MySQLConnection</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>databaseServlet</servlet-name>
+		<url-pattern>/appfin/database</url-pattern>
+	</servlet-mapping>
+
+	
+	<!-- Default page to serve -->
+	<welcome-file-list>
+		<welcome-file>AppFin.html</welcome-file>
+	</welcome-file-list>
 
 </web-app>

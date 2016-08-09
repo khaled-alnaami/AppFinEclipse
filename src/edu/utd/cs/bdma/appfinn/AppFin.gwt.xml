@@ -29,4 +29,10 @@
 
   <!-- allow Super Dev Mode -->
   <add-linker name="xsiframe"/>
+  
+  <!-- Tomcat will listen for this from the server and waits for rpc request in
+this context -->
+  <!-- <servlet class="edu.utd.cs.bdma.appfinn.server.MySQLConnection"
+path="/MySQLConnection" />  -->
+
 </module>

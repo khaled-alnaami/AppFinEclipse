@@ -1,3 +1,4 @@
 # Module appfin
 # RPC service class, partial path of RPC policy file
 edu.utd.cs.bdma.appfinn.client.GreetingService, A480FC6EAE68E2C720ABC3E07494F3DD.gwt.rpc
+edu.utd.cs.bdma.appfinn.client.DBConnection, 04274A7493C3B836FD07E75F771329F0.gwt.rpc

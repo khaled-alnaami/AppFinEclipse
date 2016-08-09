@@ -8,8 +8,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.DivElement;		
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -23,9 +24,12 @@ import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CaptionPanel;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -38,19 +42,21 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class AppFin implements EntryPoint {
 
-/////	private String link = "http://127.0.0.1:8888/appfin/";
-/////	private String link = "http://127.0.0.1:8080/appfin/";
-/////	private String link = Window.Location.getHostName() + ":" + Window.Location.getPort() + "/";
-	
+	///// private String link = "http://127.0.0.1:8888/appfin/";
+	///// private String link = "http://127.0.0.1:8080/appfin/";
+	///// private String link = Window.Location.getHostName() + ":" +
+	///// Window.Location.getPort() + "/";
+
 	private String dataDir = "/data/kld/android_apps_project/app_fingerprinting/";
-	String [] folderNames = new String[]{"d"};
+	String[] folderNames = new String[] { "d" };
 	private String appsDataFolder = "appsData/";
-	
+
 	private CaptionPanel loginCP = new CaptionPanel("Login");
 	private CaptionPanel downloadCP = new CaptionPanel("Download Folder");
 	private CaptionPanel classifiersCP = new CaptionPanel("Classifier");
@@ -63,8 +69,10 @@ public class AppFin implements EntryPoint {
 	private CaptionPanel trainingCP = new CaptionPanel("Number of Training Instances");
 	private CaptionPanel trialsCP = new CaptionPanel("Number of Trials");
 
-	private VerticalPanel loginParentPanel = new VerticalPanel();
+//	private VerticalPanel loginParentPanel = new VerticalPanel();
+	public VerticalPanel loginParentPanel = new VerticalPanel();
 	private VerticalPanel loginTextPanel = new VerticalPanel();
+	private Grid userGrid = new Grid(2, 2);
 	private VerticalPanel loginPanel = new VerticalPanel();
 	private VerticalPanel loginButtonPanel = new VerticalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -107,8 +115,8 @@ public class AppFin implements EntryPoint {
 
 	private TabPanel tabs = new TabPanel();
 
-	private Label userLabel = new Label("Username: ");
-	private Label passLabel = new Label("Password:  ");
+	private Label userLabel = new Label("Username:");
+	private Label passLabel = new Label("Password:");
 	private Label tempLabel = new Label("Fill in all fields. If there are empty fields, input will not be accepted. "
 			+ "Multiple features can be selected.");
 	private Label testLabel = new Label("Errors with the following: ");
@@ -120,16 +128,18 @@ public class AppFin implements EntryPoint {
 	private Label numTrainingLabel = new Label("Training Instances");
 	private Label numTestingLabel = new Label("Testing Instances");
 	private Label numTrialsLabel = new Label("Trials");
-	
+
 	private Label collectionProgress = new Label("Progress ..."); // Khaled
 	private Label analyticsReplyLabel = null;
-	
+
 	private ListBox folderList = new ListBox();
 	private ListBox appList = new ListBox();
 	private ListBox classifierList = new ListBox();
 	private ListBox datasetList = new ListBox();
 	private ListBox defenseList = new ListBox();
 	private ListBox featureList = new ListBox();
+	
+	private Anchor aNewUser = new Anchor();
 
 	private ArrayList<String> selectedItems = new ArrayList<String>();
 	private FlexTable flexTable = new FlexTable();
@@ -142,7 +152,7 @@ public class AppFin implements EntryPoint {
 	private int dataset = -1;
 	private int numApps = 0;
 	private int bucketSize = 0;
-	//private int ackPackets = 0;
+	// private int ackPackets = 0;
 	private int ackPackets = 1; // Khaled
 	private int numTrials = -1;
 	private int numTraining = -1;
@@ -160,45 +170,60 @@ public class AppFin implements EntryPoint {
 	private int MAXNUMTRAINING = 100;
 	private int MAXNUMTESTING = 100;
 	private int MAXNUMTRIALS = 100;
-	
+
 	private boolean boolNumApps;
 	private boolean boolBucket;
 	private boolean boolNumTraining;
 	private boolean boolNumTesting;
 	private boolean boolNumTrials;
-	
 
+	// Database
+	private final DBConnectionAsync rpcDB = (DBConnectionAsync) GWT.create(DBConnection.class);
+
+	PageNewUser pageNewUser = null;
+	
 	/**
 	 * Entry point method.
 	 */
 	public void onModuleLoad() {
 
 		// setup user and pass panels
-		userLabel.addStyleDependentName("loginLabel");
-		userPanel.add(userLabel);
-		userPanel.add(userTextBox);
-		passLabel.addStyleDependentName("loginLabel");
-		passPanel.add(passLabel);
-		passPanel.add(passTextBox);
+//		userLabel.addStyleDependentName("loginLabel");
+//		userPanel.add(userLabel);
+//		userPanel.add(userTextBox);
+//		passLabel.addStyleDependentName("loginLabel");
+//		passPanel.add(passLabel);
+//		passPanel.add(passTextBox);
 
+		userGrid.setWidget(0, 0, userLabel);
+		userGrid.setWidget(0, 1, userTextBox);
+		userGrid.setWidget(1, 0, passLabel);
+		userGrid.setWidget(1, 1, passTextBox);
+		
 		// setup login panel
-		loginTextPanel.add(userPanel);
+		loginTextPanel.add(userGrid);
 		loginTextPanel.add(passPanel);
 		loginTextPanel.addStyleName("center");
-		
+
 		loginButton.addStyleDependentName("login");
 		loginButtonPanel.add(loginButton);
 		loginButtonPanel.addStyleName("center");
-		
+
 		loginPanel.add(loginTextPanel);
 		loginPanel.add(loginButtonPanel);
 		loginPanel.addStyleName("center");
-		
+
 		// setup caption and parent panels
 		loginCP.add(loginPanel);
 		loginCP.addStyleName("loginCP");
 		loginParentPanel.add(loginCP);
 		loginParentPanel.addStyleName("center");
+		
+		// new user
+		aNewUser.setHTML("<p> Create an account </p>");
+		aNewUser.addClickHandler(new aNewUserClickHandler(this));
+		aNewUser.getElement().getStyle().setCursor(Cursor.POINTER); 
+		loginParentPanel.add(aNewUser);
 
 		// Associate the Main panel with the HTML host page.
 		RootPanel.get("test").add(loginParentPanel);
@@ -215,32 +240,35 @@ public class AppFin implements EntryPoint {
 			public void onClick(ClickEvent event) {
 				final String user = userTextBox.getText().toUpperCase().trim();
 				final String pass = passTextBox.getValue().toUpperCase().trim();
-				if (user == "USER" && pass == "PASS") {
-					RootPanel.get("test").remove(loginParentPanel);
-					onTabs();
-				} else {
-					Window.alert("Not a valid username or password.");
-					Window.Location.reload();
+				authinticateUser(user, pass);
+//				 if (user == "USER" && pass == "PASS") {
+//				 RootPanel.get("test").remove(loginParentPanel);
+//				 onTabs();
+//				 } else {
+//				 Window.alert("Not a valid username or password.");
+//				 Window.Location.reload();
+//				 }
+			}
+
+		});
+
+		// Listen for keyboard events on the Login button.
+		passTextBox.addKeyDownHandler(new KeyDownHandler() {
+			public void onKeyDown(KeyDownEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					final String user = userTextBox.getText().toUpperCase().trim();
+					final String pass = passTextBox.getValue().toUpperCase().trim();
+					authinticateUser(user, pass);
+//					if (user == "USER" && pass == "PASS") {
+//						RootPanel.get("test").remove(loginParentPanel);
+//						onTabs();
+//					} else {
+//						Window.alert("Not a valid username or password.");
+//						Window.Location.reload();
+//					}
 				}
 			}
 		});
-		
-		// Listen for keyboard events on the Login button.
-	      passTextBox.addKeyDownHandler(new KeyDownHandler() {
-	        public void onKeyDown(KeyDownEvent event) {
-	          if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-	        	  final String user = userTextBox.getText().toUpperCase().trim();
-	        	  final String pass = passTextBox.getValue().toUpperCase().trim();
-	        	  if (user == "USER" && pass == "PASS") {
-	        		  RootPanel.get("test").remove(loginParentPanel);
-	        		  onTabs();
-	        	  } else {
-	        		  Window.alert("Not a valid username or password.");
-	        		  Window.Location.reload();
-	        	  }
-	          }
-	        }
-	      });
 	}
 
 	/**
@@ -248,7 +276,6 @@ public class AppFin implements EntryPoint {
 	 */
 	@SuppressWarnings("deprecation")
 	private void onTabs() {
-		
 
 		// add to root
 		RootPanel.get("test").add(mainPanel);
@@ -257,45 +284,42 @@ public class AppFin implements EntryPoint {
 
 		// setup home tab
 		tabs.insert(homePanel, "Home", 0);
-		
+
 		// click handler for the Home tab
 		homeClickHandler();
 
-		
-		
-		//request server for array of foldernames, string.splti
-		//File folder = new File(dataDir);
-		
-//		folderList.addItem("here " + folderNames[0]);
-		
+		// request server for array of foldernames, string.splti
+		// File folder = new File(dataDir);
+
+		// folderList.addItem("here " + folderNames[0]);
+
 		getFolderNames();
-		
-		
-//		for(String name : folderNames){
-//			folderList.addItem(name);
-//		}
+
+		// for(String name : folderNames){
+		// folderList.addItem(name);
+		// }
 		downloadButton.addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				String folderName = folderList.getSelectedItemText();
-				if(folderName == ""){
+				if (folderName == "") {
 					return;
 				}
-//				String fileInfo = "?foldername="+appsDataFolder+folderName;
-				String fileInfo = "?foldername="+folderName;
-//				private String link = "http://127.0.0.1:8080/appfin/";
-				String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+				// String fileInfo = "?foldername="+appsDataFolder+folderName;
+				String fileInfo = "?foldername=" + folderName;
+				// private String link = "http://127.0.0.1:8080/appfin/";
+				String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
 				String url = link + "download" + fileInfo;
-				
-				Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
-				}
+
+				Window.open(url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+			}
 		});
-		
+
 		downloadCP.add(folderList);
 		homePanel.add(downloadCP);
 		homePanel.add(downloadButton);
-		
+
 		// load home tab
 		tabs.selectTab(0);
 
@@ -324,27 +348,28 @@ public class AppFin implements EntryPoint {
 		flexTable.getRowFormatter().addStyleName(0, "listHeader");
 		flexTable.addStyleName("watchList");
 
-		
-//		loadingPanel.add(new HTML("<image src='http://i16.photobucket.com/albums/b34/Andra1/gif%20images/c190997e.gif' alt='Loading Text'></image>"));
+		// loadingPanel.add(new HTML("<image
+		// src='http://i16.photobucket.com/albums/b34/Andra1/gif%20images/c190997e.gif'
+		// alt='Loading Text'></image>"));
 		loadingPanel.add(new HTML("<image src='images/hourglass.gif' alt='Loading Text'></image>"));
 		loadingPanel.add(new HTML("<p>The request is being processed. Please wait.</p>"));
 		loadingPanel.setVisible(false);
-		
+
 		collectPanel.add(loadingPanel);
 		collectPanel.add(flexTable);
-		
-		//get url address from server
+
+		// get url address from server
 		String url = "https://rtcxp.com/screen/?s=android_capture&p=utdbdma";
-		
-		//set up live display		
-		displayPanel.add(new HTML("<h2 style=text-align:center;>Live Display</h2>"));		
-		displayPanel.add(new HTML("<div id=container><iframe id=embed src="+url+" scrolling=no></iframe></div>"));
+
+		// set up live display
+		displayPanel.add(new HTML("<h2 style=text-align:center;>Live Display</h2>"));
+		displayPanel.add(new HTML("<div id=container><iframe id=embed src=" + url + " scrolling=no></iframe></div>"));
 		HorizontalPanel container = new HorizontalPanel();
 		container.add(collectPanel);
 		container.add(displayPanel);
 		container.setCellWidth(collectPanel, "50%");
 		container.setCellWidth(displayPanel, "50%");
-		
+
 		// setup selection panel
 		appSelect.add(appList);
 		appSelect.add(addAppButton);
@@ -379,7 +404,7 @@ public class AppFin implements EntryPoint {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					public void execute() {
 						onTesting();
-						
+
 					}
 				});
 			}
@@ -395,15 +420,15 @@ public class AppFin implements EntryPoint {
 				selectedItems.clear();
 			}
 		});
-		refreshButton.addClickHandler(new ClickHandler() {		
-			
-		@Override		
-		public void onClick(ClickEvent event) {		
-			DivElement frame = (DivElement) Document.get().getElementById("embed");		
-			frame.setAttribute("src", frame.getAttribute("src"));		
-		  }		
-	    });
-		
+		refreshButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				DivElement frame = (DivElement) Document.get().getElementById("embed");
+				frame.setAttribute("src", frame.getAttribute("src"));
+			}
+		});
+
 		/** Data Analytics Tab **/
 
 		// Creates a drop down for classifiers
@@ -437,10 +462,11 @@ public class AppFin implements EntryPoint {
 		// Creates a drop down for data sets
 		datasetList.clear();
 		datasetList.addItem("Select a Dataset", "-1");
-//		datasetList.addItem("2016-7-7-1530", "0");
-//		datasetList.addItem("2016-7-8-1330", "1");
-//		datasetList.addItem("2016-7-9-1130", "2");
-		datasetList.addItem("Android Apps Dataset", "4"); // Added by Khaled, 7/16/2016
+		// datasetList.addItem("2016-7-7-1530", "0");
+		// datasetList.addItem("2016-7-8-1330", "1");
+		// datasetList.addItem("2016-7-9-1130", "2");
+		datasetList.addItem("Android Apps Dataset", "4"); // Added by Khaled,
+															// 7/16/2016
 
 		// feature list
 		featureList.clear();
@@ -494,11 +520,11 @@ public class AppFin implements EntryPoint {
 		buttonPanel.addStyleName("center");
 
 		// default values
-//		appTextBox.setText("0"); // default values modified by khaled
-//		bucketTextBox.setText("0"); 
-//		trainingTextBox.setText("0");
-//		testingTextBox.setText("0");
-//		trialTextBox.setText("0");
+		// appTextBox.setText("0"); // default values modified by khaled
+		// bucketTextBox.setText("0");
+		// trainingTextBox.setText("0");
+		// testingTextBox.setText("0");
+		// trialTextBox.setText("0");
 		appTextBox.setText("2000");
 		bucketTextBox.setText("20");
 		trainingTextBox.setText("16");
@@ -530,7 +556,7 @@ public class AppFin implements EntryPoint {
 						concatFeatures += featureList.getItemText(i);
 					}
 				}
-				
+
 				boolNumApps = verifyNumApps(numApps);
 				boolBucket = verifyBucketSize(bucketSize);
 				boolNumTraining = verifyNumTraining(numTraining);
@@ -540,39 +566,39 @@ public class AppFin implements EntryPoint {
 				// verifies no empty fields
 				if (classifier == -1 || defense == -1 || dataset == -1 || numApps == 0 || bucketSize == 0
 						|| numTraining == 0 || numTesting == 0 || numTrials == 0) {
-					//Window.alert("Make a selection.");
+					// Window.alert("Make a selection.");
 					errorPanel.add(testLabel);
-					if (classifier == -1){
+					if (classifier == -1) {
 						errorPanel.add(classifierLabel);
 					}
-					if (defense == -1){
+					if (defense == -1) {
 						errorPanel.add(defenseLabel);
 					}
-					if (dataset == -1){
+					if (dataset == -1) {
 						errorPanel.add(datasetLabel);
 					}
-					if (boolNumApps){
+					if (boolNumApps) {
 						errorPanel.add(numAppsLabel);
 					}
-					if (boolBucket){
+					if (boolBucket) {
 						errorPanel.add(bucketLabel);
 					}
-					if (boolNumTraining){
+					if (boolNumTraining) {
 						errorPanel.add(numTrainingLabel);
 					}
-					if (boolNumTesting){
+					if (boolNumTesting) {
 						errorPanel.add(numTestingLabel);
 					}
-					if (boolNumTrials){
+					if (boolNumTrials) {
 						errorPanel.add(numTrialsLabel);
 					}
 					analyticsPanel.add(errorPanel);
-			
+
 				} else {
 					run();
-//					TabBar barA = tabs.getTabBar();
-//					barA.setTabEnabled(0, false);
-//					barA.setTabEnabled(1, false);
+					// TabBar barA = tabs.getTabBar();
+					// barA.setTabEnabled(0, false);
+					// barA.setTabEnabled(1, false);
 				}
 			}
 		});
@@ -583,7 +609,7 @@ public class AppFin implements EntryPoint {
 				for (int i = 0; i < featureList.getItemCount(); i++) {
 					featureList.setItemSelected(i, false);
 				}
-				
+
 				classifierList.setItemSelected(0, true);
 				defenseList.setItemSelected(0, true);
 				datasetList.setItemSelected(0, true);
@@ -607,11 +633,11 @@ public class AppFin implements EntryPoint {
 				Window.Location.reload();
 			}
 		});
-		
+
 		// docs tab
 		PageDocs pageDocs = new PageDocs();
 		tabs.insert(pageDocs, "Documentation", 3);
-		
+
 		PageAbout pageAbout = new PageAbout();
 		tabs.insert(pageAbout, "About", 4);
 	}
@@ -622,7 +648,7 @@ public class AppFin implements EntryPoint {
 	private void onTesting() {
 		loadingPanel.setVisible(true);
 		apps = "";
-		//reformat into ? parameters
+		// reformat into ? parameters
 		for (String each : selectedItems) {
 			apps += each;
 			apps += ";";
@@ -660,40 +686,41 @@ public class AppFin implements EntryPoint {
 			ackPackets = 0;
 		}
 
-		call = "python mainBiDirectionLatest.py" + " -N " + numApps + " -k " + bucketSize + " -d " + dataset + " -C " + classifier 
-				+ " -c " + defense + " -n " + numTrials + " -t " + numTraining + " -T " + numTesting + " -D " + packetSize + " -E " 
-				+ uniBurstSize +  " -F " + uniBurstTime + " -G " + uniBurstNumber + " -H " + biBurstSize + " -I " + biBurstTime 
-				+ " -A " + ackPackets;
-		
+		call = "python mainBiDirectionLatest.py" + " -N " + numApps + " -k " + bucketSize + " -d " + dataset + " -C "
+				+ classifier + " -c " + defense + " -n " + numTrials + " -t " + numTraining + " -T " + numTesting
+				+ " -D " + packetSize + " -E " + uniBurstSize + " -F " + uniBurstTime + " -G " + uniBurstNumber + " -H "
+				+ biBurstSize + " -I " + biBurstTime + " -A " + ackPackets;
+
 		// start testing script, Khaled
 		testLabel = new Label("Script running: " + call);
 		errorPanel.add(testLabel);
 		analyticsPanel.add(errorPanel);
 		// end testing script, Khaled
-		
+
 		// call the server which implements the socket
-		//call = "python mainBiDirectionLatest.py -C 3 -k 20 -c 0 -t 16 -T 4 -N 2000 -d 4 -n 1 -D 1 -E 1 -F 1 -G 1 -H 1 -I 1 -A 1 -V 0 -b 600";
+		// call = "python mainBiDirectionLatest.py -C 3 -k 20 -c 0 -t 16 -T 4 -N
+		// 2000 -d 4 -n 1 -D 1 -E 1 -F 1 -G 1 -H 1 -I 1 -A 1 -V 0 -b 600";
 		/***
-		greetingService.greetServer(call, new AsyncCallback<String>() {
-			public void onFailure(Throwable caught) {
-
-			}
-
-			public void onSuccess(String result) {
-
-			}
-		});
-		***/
-//		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
-//		String script = "?script="+call;
-//		String url = link + "data" + script;
-//		
-//		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+		 * greetingService.greetServer(call, new AsyncCallback<String>() {
+		 * public void onFailure(Throwable caught) {
+		 * 
+		 * }
+		 * 
+		 * public void onSuccess(String result) {
+		 * 
+		 * } });
+		 ***/
+		// String link =
+		// "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+		// String script = "?script="+call;
+		// String url = link + "data" + script;
+		//
+		// Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
 		analyticsPanel.add(loadingPanel);
 		loadingPanel.setVisible(true);
 		tabs.setStyleName("pointer");
 		requestSocket2(call);
-		
+
 	}
 
 	/**
@@ -706,132 +733,132 @@ public class AppFin implements EntryPoint {
 		return false;
 	}
 
-	private boolean verifyNumApps(int i){
-		if (i > NUMAPPSINDATASET || i <= 0){
-			
+	private boolean verifyNumApps(int i) {
+		if (i > NUMAPPSINDATASET || i <= 0) {
+
 			return true;
-		}
-		else{
-			
+		} else {
+
 			return false;
 		}
 	}
-	private boolean verifyBucketSize(int i){
-		if (i > MAXBUCKETSIZE || i <= 0){
-			
+
+	private boolean verifyBucketSize(int i) {
+		if (i > MAXBUCKETSIZE || i <= 0) {
+
 			return true;
-		}
-		else{
-			
+		} else {
+
 			return false;
 		}
 	}
-	private boolean verifyNumTraining(int i){
-		if (i > MAXNUMTRAINING || i <= 0){
-			
+
+	private boolean verifyNumTraining(int i) {
+		if (i > MAXNUMTRAINING || i <= 0) {
+
 			return true;
-			
-		}
-		else{
-			
+
+		} else {
+
 			return false;
 		}
 	}
-	private boolean verifyNumTesting(int i){
-		if (i > MAXNUMTESTING || i <= 0){
-			
+
+	private boolean verifyNumTesting(int i) {
+		if (i > MAXNUMTESTING || i <= 0) {
+
 			return true;
-		}
-		else{
-			
+		} else {
+
 			return false;
 		}
 	}
-	private boolean verifyNumTrials(int i){
-		if (i > MAXNUMTRIALS || i <= 0){
-			
+
+	private boolean verifyNumTrials(int i) {
+		if (i > MAXNUMTRIALS || i <= 0) {
+
 			return true;
-		}
-		else{
-			
+		} else {
+
 			return false;
-			
+
 		}
 	}
-	
-	//get method to servlet
-	public void requestSocket(String apps){
+
+	// get method to servlet
+	public void requestSocket(String apps) {
 		loadingPanel.setVisible(true);
-		
-		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
-		String script = "?script="+apps;
-		String url = link + "data" + script;
-		
-//		Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
-		
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-        try {
-           Request response = builder.sendRequest(null, new RequestCallback() {
-                public void onError(Request request, Throwable exception) {
-//    				openWindow("Request Failed", exception.toString());
-					Window.alert("Request failed. "+exception.toString());
-//					Window.Location.reload();
-    				loadingPanel.setVisible(false);
-    				tabs.removeStyleName("pointer");
-                }
 
-                public void onResponseReceived(Request request, Response response) {
-//    				openWindow("Request Succeded", response.getText());
-					Window.alert("Request succeded. "+response.getText());
-//					Window.Location.reload();
-    				loadingPanel.setVisible(false);
-    				tabs.removeStyleName("pointer");
-                }
-            });
-        } catch (RequestException e) {
-            e.printStackTrace();
-        }
-	}
-	
-	//get method to servlet
-	public void requestSocket2(String call){
-		String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
-		String script = "?script="+call;
+		String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
+		String script = "?script=" + apps;
 		String url = link + "data" + script;
-		
-				
+
+		// Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-        try {
-           Request response = builder.sendRequest(null, new RequestCallback() {
-                public void onError(Request request, Throwable exception) {
-//                     openWindow("Request Failed", exception.toString());
-                	//analyticsReplyLabel = new Label("request failed "+exception.toString());
-            		//errorPanel.add(analyticsReplyLabel);
-            		//analyticsPanel.add(errorPanel);
-					Window.alert("Request failed. "+exception.toString());
+		try {
+			Request response = builder.sendRequest(null, new RequestCallback() {
+				public void onError(Request request, Throwable exception) {
+					// openWindow("Request Failed", exception.toString());
+					Window.alert("Request failed. " + exception.toString());
+					// Window.Location.reload();
 					loadingPanel.setVisible(false);
 					tabs.removeStyleName("pointer");
-//					Window.Location.reload();
-                }
+				}
 
-                public void onResponseReceived(Request request, Response response) {
-//                	openWindow("Request Succeded", response.getText());
-                	//analyticsReplyLabel = new Label("request succeded "+response.getText());
-            		//errorPanel.add(analyticsReplyLabel);
-            		//analyticsPanel.add(errorPanel);
-					Window.alert("Request succeded. "+response.getText());
+				public void onResponseReceived(Request request, Response response) {
+					// openWindow("Request Succeded", response.getText());
+					Window.alert("Request succeded. " + response.getText());
+					// Window.Location.reload();
 					loadingPanel.setVisible(false);
 					tabs.removeStyleName("pointer");
-//					Window.Location.reload();
-                }
-            });
-        } catch (RequestException e) {
-            e.printStackTrace();
-        }
+				}
+			});
+		} catch (RequestException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
+	// get method to servlet
+	public void requestSocket2(String call) {
+		String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
+		String script = "?script=" + call;
+		String url = link + "data" + script;
+
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+		try {
+			Request response = builder.sendRequest(null, new RequestCallback() {
+				public void onError(Request request, Throwable exception) {
+					// openWindow("Request Failed", exception.toString());
+					// analyticsReplyLabel = new Label("request failed
+					// "+exception.toString());
+					// errorPanel.add(analyticsReplyLabel);
+					// analyticsPanel.add(errorPanel);
+					Window.alert("Request failed. " + exception.toString());
+					loadingPanel.setVisible(false);
+					tabs.removeStyleName("pointer");
+					// Window.Location.reload();
+				}
+
+				public void onResponseReceived(Request request, Response response) {
+					// openWindow("Request Succeded", response.getText());
+					// analyticsReplyLabel = new Label("request succeded
+					// "+response.getText());
+					// errorPanel.add(analyticsReplyLabel);
+					// analyticsPanel.add(errorPanel);
+					Window.alert("Request succeded. " + response.getText());
+					loadingPanel.setVisible(false);
+					tabs.removeStyleName("pointer");
+					// Window.Location.reload();
+				}
+			});
+		} catch (RequestException e) {
+			e.printStackTrace();
+		}
+	}
+
 	// To get pcap folder names
-	void getFolderNames(){
+	void getFolderNames() {
 		greetingService.getFileNames(new AsyncCallback<String[]>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -839,35 +866,80 @@ public class AppFin implements EntryPoint {
 				folderNames[0] = "inside onFailure";
 				folderList.addItem("inside onFailure");
 			}
+
 			@Override
 			public void onSuccess(String[] result) {
 				// TODO Auto-generated method stub
 				folderNames = result;
 				folderList.clear();
-				for(String name : folderNames){
+				for (String name : folderNames) {
 					folderList.addItem(name);
 				}
 			}
 		});
 	}
-	
-	void homeClickHandler(){
+
+	void homeClickHandler() {
 		tabs.addSelectionHandler(new SelectionHandler<Integer>() {
 
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
 				// TODO Auto-generated method stub
-			    if (event.getSelectedItem() == 0) {
-				      // Code
-			    	getFolderNames();
-				    }
+				if (event.getSelectedItem() == 0) {
+					// Code
+					getFolderNames();
+				}
+
+			}
+		});
+	}
+
+	void authinticateUser(String user, String pass) {
+		rpcDB.authenticateUser(user, pass, new AsyncCallback<User>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert("Database connection failure! Please contact admin!");
+			}
+
+			@Override
+			public void onSuccess(User user) {
+				// TODO Auto-generated method stub
+				if (user.isGrantAcecss() == true) {
+					RootPanel.get("test").remove(loginParentPanel);
+					onTabs();
+				} else {
+					 Window.alert("Not a valid username or password.");
+					 Window.Location.reload();
+				}
 				
 			}
-			});
+		});
+
 	}
-	
+
 	public static native void openWindow(String url, String message)/*-{
-		var myWindow = window.open(url, "_blank", "status=0,toolbar=0,menubar=0,location=0,width=200,height=100");
+		var myWindow = window.open(url, "_blank",
+				"status=0,toolbar=0,menubar=0,location=0,width=200,height=100");
 		myWindow.document.write(message);
 	}-*/;
+	
+	
+	private class aNewUserClickHandler implements ClickHandler {
+
+		AppFin entryPoint = null;
+		
+		public aNewUserClickHandler(AppFin entryPoint){
+			this.entryPoint = entryPoint;
+		}
+		
+		@Override
+		public void onClick(ClickEvent event) {
+			
+			pageNewUser = new PageNewUser(entryPoint);
+			RootPanel.get("test").remove(loginParentPanel);
+			RootPanel.get("test").add(pageNewUser);
+			
+		}
+	}
 }
