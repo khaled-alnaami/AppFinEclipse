@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -57,7 +56,7 @@ public class AppFin implements EntryPoint {
 	String[] folderNames = new String[] { "d" };
 	private String appsDataFolder = "appsData/";
 
-	private CaptionPanel loginCP = new CaptionPanel("Login");
+	private CaptionPanel loginCP = new CaptionPanel("Sign in");
 	private CaptionPanel downloadCP = new CaptionPanel("Download Folder");
 	private CaptionPanel classifiersCP = new CaptionPanel("Classifier");
 	private CaptionPanel defensesCP = new CaptionPanel("Defense");
@@ -69,7 +68,7 @@ public class AppFin implements EntryPoint {
 	private CaptionPanel trainingCP = new CaptionPanel("Number of Training Instances");
 	private CaptionPanel trialsCP = new CaptionPanel("Number of Trials");
 
-//	private VerticalPanel loginParentPanel = new VerticalPanel();
+	// private VerticalPanel loginParentPanel = new VerticalPanel();
 	public VerticalPanel loginParentPanel = new VerticalPanel();
 	private VerticalPanel loginTextPanel = new VerticalPanel();
 	private Grid userGrid = new Grid(2, 2);
@@ -115,8 +114,8 @@ public class AppFin implements EntryPoint {
 
 	private TabPanel tabs = new TabPanel();
 
-	private Label userLabel = new Label("Username:");
-	private Label passLabel = new Label("Password:");
+	private Label userLabel = new Label("Username");
+	private Label passLabel = new Label("Password");
 	private Label tempLabel = new Label("Fill in all fields. If there are empty fields, input will not be accepted. "
 			+ "Multiple features can be selected.");
 	private Label testLabel = new Label("Errors with the following: ");
@@ -138,7 +137,7 @@ public class AppFin implements EntryPoint {
 	private ListBox datasetList = new ListBox();
 	private ListBox defenseList = new ListBox();
 	private ListBox featureList = new ListBox();
-	
+
 	private Anchor aNewUser = new Anchor();
 
 	private ArrayList<String> selectedItems = new ArrayList<String>();
@@ -181,31 +180,55 @@ public class AppFin implements EntryPoint {
 	private final DBConnectionAsync rpcDB = (DBConnectionAsync) GWT.create(DBConnection.class);
 
 	PageNewUser pageNewUser = null;
-	
+
+	ArrayList<TextBox> requiredControlsList = new ArrayList<TextBox>();
+
 	/**
 	 * Entry point method.
 	 */
 	public void onModuleLoad() {
 
 		// setup user and pass panels
-//		userLabel.addStyleDependentName("loginLabel");
-//		userPanel.add(userLabel);
-//		userPanel.add(userTextBox);
-//		passLabel.addStyleDependentName("loginLabel");
-//		passPanel.add(passLabel);
-//		passPanel.add(passTextBox);
+		// userLabel.addStyleDependentName("loginLabel");
+		// userPanel.add(userLabel);
+		// userPanel.add(userTextBox);
+		// passLabel.addStyleDependentName("loginLabel");
+		// passPanel.add(passLabel);
+		// passPanel.add(passTextBox);
 
+		setStyle();
+
+		
+		loginTextPanel.add(new HTML("<table><tr>"
+			+ "<td class=\"tds\" colspan=\"100\">"
+			+ "<image src='images/secure_key.jpg'></image></td>"
+			+ "</tr></table>"));
+		
+		// empty line seperator
+		loginTextPanel.add(new HTML("<table><tr>"
+				+ "<td colspan=\"100\">"
+				+ "</td>"
+				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
+		
 		userGrid.setWidget(0, 0, userLabel);
 		userGrid.setWidget(0, 1, userTextBox);
 		userGrid.setWidget(1, 0, passLabel);
 		userGrid.setWidget(1, 1, passTextBox);
-		
+
 		// setup login panel
 		loginTextPanel.add(userGrid);
-		loginTextPanel.add(passPanel);
+		
+		// empty line seperator
+		loginTextPanel.add(new HTML("<table><tr>"
+				+ "<td colspan=\"100\">"
+				+ "</td>"
+				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
+		
+//		loginTextPanel.add(passPanel);
 		loginTextPanel.addStyleName("center");
 
 		loginButton.addStyleDependentName("login");
+//		loginButton.setStyleName("Button_White");
 		loginButtonPanel.add(loginButton);
 		loginButtonPanel.addStyleName("center");
 
@@ -218,12 +241,12 @@ public class AppFin implements EntryPoint {
 		loginCP.addStyleName("loginCP");
 		loginParentPanel.add(loginCP);
 		loginParentPanel.addStyleName("center");
-		
+
 		// new user
 		aNewUser.setHTML("<p> Create an account </p>");
 		aNewUser.addClickHandler(new aNewUserClickHandler(this));
-		aNewUser.getElement().getStyle().setCursor(Cursor.POINTER); 
-		loginParentPanel.add(aNewUser);
+		aNewUser.getElement().getStyle().setCursor(Cursor.POINTER);
+		loginButtonPanel.add(aNewUser);
 
 		// Associate the Main panel with the HTML host page.
 		RootPanel.get("test").add(loginParentPanel);
@@ -238,16 +261,18 @@ public class AppFin implements EntryPoint {
 		// Listen for mouse events on the Login button.
 		loginButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				final String user = userTextBox.getText().toUpperCase().trim();
-				final String pass = passTextBox.getValue().toUpperCase().trim();
-				authinticateUser(user, pass);
-//				 if (user == "USER" && pass == "PASS") {
-//				 RootPanel.get("test").remove(loginParentPanel);
-//				 onTabs();
-//				 } else {
-//				 Window.alert("Not a valid username or password.");
-//				 Window.Location.reload();
-//				 }
+				if (validateData()) {
+					final String user = userTextBox.getText().trim();
+					final String pass = passTextBox.getValue().trim();
+					authinticateUser(user, pass);
+				}
+				// if (user == "USER" && pass == "PASS") {
+				// RootPanel.get("test").remove(loginParentPanel);
+				// onTabs();
+				// } else {
+				// Window.alert("Not a valid username or password.");
+				// Window.Location.reload();
+				// }
 			}
 
 		});
@@ -259,13 +284,13 @@ public class AppFin implements EntryPoint {
 					final String user = userTextBox.getText().toUpperCase().trim();
 					final String pass = passTextBox.getValue().toUpperCase().trim();
 					authinticateUser(user, pass);
-//					if (user == "USER" && pass == "PASS") {
-//						RootPanel.get("test").remove(loginParentPanel);
-//						onTabs();
-//					} else {
-//						Window.alert("Not a valid username or password.");
-//						Window.Location.reload();
-//					}
+					// if (user == "USER" && pass == "PASS") {
+					// RootPanel.get("test").remove(loginParentPanel);
+					// onTabs();
+					// } else {
+					// Window.alert("Not a valid username or password.");
+					// Window.Location.reload();
+					// }
 				}
 			}
 		});
@@ -909,10 +934,10 @@ public class AppFin implements EntryPoint {
 					RootPanel.get("test").remove(loginParentPanel);
 					onTabs();
 				} else {
-					 Window.alert("Not a valid username or password.");
-					 Window.Location.reload();
+					Window.alert("Not a valid username or password.");
+					Window.Location.reload();
 				}
-				
+
 			}
 		});
 
@@ -923,23 +948,51 @@ public class AppFin implements EntryPoint {
 				"status=0,toolbar=0,menubar=0,location=0,width=200,height=100");
 		myWindow.document.write(message);
 	}-*/;
-	
-	
+
 	private class aNewUserClickHandler implements ClickHandler {
 
 		AppFin entryPoint = null;
-		
-		public aNewUserClickHandler(AppFin entryPoint){
+
+		public aNewUserClickHandler(AppFin entryPoint) {
 			this.entryPoint = entryPoint;
 		}
-		
+
 		@Override
 		public void onClick(ClickEvent event) {
-			
+			System.out.println("inside the anchor");
 			pageNewUser = new PageNewUser(entryPoint);
 			RootPanel.get("test").remove(loginParentPanel);
 			RootPanel.get("test").add(pageNewUser);
-			
+
 		}
+	}
+
+	private void setStyle() {
+		// TODO Auto-generated method stub
+		userTextBox.setStyleName("TextBox");
+		passTextBox.setStyleName("TextBox");
+		
+		userLabel.setStyleName("Labels");
+		passLabel.setStyleName("Labels");
+		
+		loginButton.setStyleName("Button_White");
+		loginButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		
+	}
+
+	public boolean validateData() {
+		// code to validate data entry
+		// add the widgets (text boxes) to an array list
+		requiredControlsList = new ArrayList<TextBox>();
+		requiredControlsList.add(userTextBox);
+		requiredControlsList.add(passTextBox);
+
+		if (Utils.CheckRequiredField(requiredControlsList)) {
+			Window.alert("Please fill in required fields.");
+			return false;
+		}
+
+		return true;
 	}
 }

@@ -1,6 +1,7 @@
 /* Formatting specific to the AppFin application */
 body {
   padding: 50px;
+  /*border: 1px;*/
 }
 
 /* Big Data Lab */ 
@@ -10,7 +11,7 @@ h1 {
   font-family: "Times New Roman", Georgia, serif;
   color: #ce5c00;
   margin: auto;
-  text-align: left;
+  text-align: center;
 }
 
 /* UTD */ 
@@ -20,7 +21,7 @@ h2 {
   font-family: "Times New Roman", Georgia, serif;
   color: #356e2b;
   margin: auto;
-  text-align: left;
+  text-align: center;
 }
 
 /* AppFin */
@@ -152,12 +153,16 @@ fieldset {
 .loginCP {
   border: 2px;
   border-style: solid;
-  border-color: #008000;
-  font-size: 200%;
-  font-color: #ce5c00;
+  /*border-color: #008000;*/
+  border-color: silver;
+  /*font-size: 200%;*/
+  /*font-color: #ce5c00*/;
   display: inline;
   width: auto;
   height: auto;
+  font-family: Verdana, Tahoma, 'Times New Roman';     
+  font-size: 11pt;
+  color: #316CAE;
 }
 
 /* formats the bar behind the tabs */
@@ -200,4 +205,58 @@ fieldset {
     -moz-resize:none;
     resize:none;
     */
+}
+
+.Button_White
+{
+border-right: darkgray 1px solid;
+border-top: darkgray 1px solid;
+font-size: 10pt;
+border-left: darkgray 1px solid;
+border-bottom: darkgray 1px solid;
+font-family: Verdana, Tahoma, 'Times New Roman';
+background-color:White  ;
+color:#316CAE;    
+cursor:hand ;
+height: 30px;
+width:110px; 
+}
+
+.TextBox
+{
+	border-right: #c7ccdc 1px solid;
+	border-top: #c7ccdc 1px solid;
+	font-size: 10pt;
+	border-left: #c7ccdc 1px solid;
+	border-bottom: #c7ccdc 1px solid;
+	font-family: Tahoma, Verdana, 'Times New Roman';
+	height: 20px;	 
+	width: 200px;	 
+}
+
+.TextBoxRed
+{
+	border-right: #c7ccdc 1px solid;
+	border-top: #c7ccdc 1px solid;
+	font-size: 10pt;
+	border-left: #c7ccdc 1px solid;
+	border-bottom: #c7ccdc 1px solid;
+	font-family: Tahoma, Verdana, 'Times New Roman';
+	height: 20px;
+	width: 200px;	
+	/*border-color: #FFAA00*/
+	border-color: red
+}
+
+.Labels
+{	
+	font-family: Verdana, Tahoma, 'Times New Roman';     
+	font-size: 9pt;
+	color:Gray ;
+}
+
+.tds
+{
+	background-color:#7DBEFF   ;
+	text-align:left;		
 }
