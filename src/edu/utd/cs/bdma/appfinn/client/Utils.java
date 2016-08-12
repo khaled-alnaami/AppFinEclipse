@@ -2,6 +2,7 @@ package edu.utd.cs.bdma.appfinn.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import com.google.gwt.user.client.ui.TextBox;
 
@@ -45,4 +46,5 @@ public class Utils {
 		}
 		return invalidData;
 	}
+
 }

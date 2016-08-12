@@ -56,7 +56,21 @@
 		<url-pattern>/appfin/database</url-pattern>
 	</servlet-mapping>
 
-	
+
+
+	<servlet>
+		<servlet-name>emailServlet</servlet-name>
+		<servlet-class>edu.utd.cs.bdma.appfinn.server.EmailServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>emailServlet</servlet-name>
+		<url-pattern>/email</url-pattern>
+	</servlet-mapping>
+
+
+
+
 	<!-- Default page to serve -->
 	<welcome-file-list>
 		<welcome-file>AppFin.html</welcome-file>

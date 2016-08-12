@@ -10,4 +10,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface DBConnection extends RemoteService {
 	public User authenticateUser(String user, String pass);
 	public Boolean insertOrUpdate(String sqlCmd);
+	public Boolean generateCodeSendEmail(String email);
+	public Boolean checkRecord(String sqlCmd);
 }

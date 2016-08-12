@@ -33,7 +33,7 @@ public class PageNewUser extends Composite {
 
 	Grid g = new Grid(7, 2);
 	Grid gValidateCode = new Grid(1, 2);
-	
+
 	Label fnameLbl = new Label("First Name");
 	TextBox fnameTxt = new TextBox();
 
@@ -57,10 +57,11 @@ public class PageNewUser extends Composite {
 
 	Label emailCodeLbl = new Label("Email Code");
 	TextBox emailCodeTxt = new TextBox();
-	
+
 	Button submitBtn = new Button("Submit");
 
 	Button cancelBtn = new Button("Cancel");
+	Button verifyBtn = new Button("Verify");
 
 	CaptionPanel newUserCP = new CaptionPanel("New User");
 
@@ -72,6 +73,8 @@ public class PageNewUser extends Composite {
 	// Validation
 	ArrayList<Object> requiredControlsList = new ArrayList<Object>();
 	HashMap<Object, String> validControlList = new HashMap<Object, String>();
+
+	String emailCode = "";
 
 	public PageNewUser(AppFin entryPoint) {
 		this.entryPoint = entryPoint;
@@ -106,14 +109,13 @@ public class PageNewUser extends Composite {
 		g.setWidget(6, 0, passwordLbl2);
 		g.setWidget(6, 1, passwordTxt2);
 
-		
 		newUserPanel.add(g);
 
 		gValidateCode.setWidget(0, 0, emailCodeLbl);
 		gValidateCode.setWidget(0, 1, emailCodeTxt);
 		gValidateCode.setVisible(false);
 		newUserPanel.add(gValidateCode);
-		
+
 		// empty line seperator
 		newUserPanel.add(new HTML("<table><tr>" + "<td colspan=\"100\">" + "</td>"
 				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
@@ -125,6 +127,10 @@ public class PageNewUser extends Composite {
 		submitButtonPanel.add(submitBtn);
 
 		cancelBtn.addClickHandler(new cancelBtnClickHandler());
+
+		verifyBtn.setVisible(false);
+		submitButtonPanel.add(verifyBtn);
+		verifyBtn.addClickHandler(new verifyBtnClickHandler());
 
 		submitButtonPanel.add(cancelBtn);
 
@@ -147,7 +153,7 @@ public class PageNewUser extends Composite {
 		passwordLbl.setStyleName("Labels");
 		passwordLbl2.setStyleName("Labels");
 		emailCodeLbl.setStyleName("Labels");
-		
+
 		// textboxes style
 		fnameTxt.setStyleName("TextBox");
 		lnameTxt.setStyleName("TextBox");
@@ -160,9 +166,11 @@ public class PageNewUser extends Composite {
 
 		submitBtn.setStyleName("Button_White");
 		cancelBtn.setStyleName("Button_White");
+		verifyBtn.setStyleName("Button_White");
 
 		submitBtn.getElement().getStyle().setCursor(Cursor.POINTER);
 		cancelBtn.getElement().getStyle().setCursor(Cursor.POINTER);
+		verifyBtn.getElement().getStyle().setCursor(Cursor.POINTER);
 	}
 
 	private class submitBtnClickHandler implements ClickHandler {
@@ -170,23 +178,41 @@ public class PageNewUser extends Composite {
 		@Override
 		public void onClick(ClickEvent event) {
 			if (validateData()) {
-//                if (validateEmailCode()){
-//                	insert();
-//                }
+				validateEmailCode();
 			}
 
 		}
 
-		private boolean validateEmailCode() {
-//			generateCode();
-//			sendEmail();
-//			checkCode();
-
+		private void validateEmailCode() {
+			submitBtn.setVisible(false);
+			g.setVisible(false);
 			gValidateCode.setVisible(true);
-			Window.alert("Please check your email and fill in the Email Code!");
+			verifyBtn.setVisible(true);
 
-			
-			return false;
+			generateCodeSendEmail();
+
+			// sendEmail();
+			// checkCode(); button
+
+			// Window.alert("Please check your email, fill in the Email Code,
+			// and Verify.");
+			// return false;
+		}
+
+		private void generateCodeSendEmail() {
+
+			rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), new AsyncCallback<Boolean>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Error generating code! Please contact Admin.");
+				}
+
+				@Override
+				public void onSuccess(Boolean code) {
+					Window.alert("Please check your email, fill in the Email Code, and Verify.");
+				}
+			});
+
 		}
 
 		public boolean validateData() {
@@ -258,6 +284,82 @@ public class PageNewUser extends Composite {
 
 			return false;
 		}
+		/***
+		 * public void insert() { String FirstName = "'" +
+		 * fnameTxt.getText().trim() + "',"; String LastName = "'" +
+		 * lnameTxt.getText().trim() + "',"; String Phone = "'" +
+		 * phoneTxt.getText().trim() + "',"; String Email = "'" +
+		 * emailTxt.getText().trim() + "',"; String UserName = "'" +
+		 * userNameTxt.getText().trim() + "',"; String password = "'" +
+		 * passwordTxt.getText().trim() + "',"; String AdminLevel = "'5'";
+		 * 
+		 * // id is incremented automatically String sqlCmd = "insert into
+		 * tblUser " + "(FirstName, " + "LastName, " + "Phone, " + "Email, " +
+		 * "UserName, " + "UserPassword, " + "AdminLevel) " + "values " + "(" +
+		 * FirstName + LastName + Phone + Email + UserName + password +
+		 * AdminLevel + ");"; // "insert into tblUser values ('2', 'dml2',
+		 * 'dmllab2', // '9728834137', 'dml.utd@gmail.com', 'dml2', 'dml212345',
+		 * '1');";
+		 * 
+		 * System.out.println("inside PageNewUser.insert()");
+		 * rpcDB.insertOrUpdate(sqlCmd, new AsyncCallback<Boolean>() {
+		 * 
+		 * @Override public void onFailure(Throwable caught) { // TODO
+		 *           Auto-generated method stub Window.alert("Database
+		 *           connection failure! Please contact admin!"); }
+		 * 
+		 * @Override public void onSuccess(Boolean validInsert) { // TODO
+		 *           Auto-generated method stub if (validInsert == true) {
+		 *           Window.alert("Record inserted successfully!.");
+		 *           RootPanel.get("test").remove(entryPoint.pageNewUser);
+		 *           RootPanel.get("test").add(entryPoint.loginParentPanel); }
+		 *           else { Window.alert("Record insert error!."); //
+		 *           Window.Location.reload(); }
+		 * 
+		 *           } }); }
+		 **/
+	}
+
+	private class cancelBtnClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent event) {
+
+			RootPanel.get("test").remove(entryPoint.pageNewUser);
+			RootPanel.get("test").add(entryPoint.loginParentPanel);
+
+		}
+	}
+
+	private class verifyBtnClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent event) {
+			requiredControlsList = new ArrayList<Object>();
+			requiredControlsList.add(emailCodeTxt);
+			if (Utils.CheckRequiredField(requiredControlsList)) {
+				Window.alert("Please fill in required field(s).");
+			} else {
+				String sqlCmd = "select * from tblCodes where Code = '" + emailCodeTxt.getText().trim() + "';";
+				rpcDB.checkRecord(sqlCmd, new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Error checking code! Please contact Admin.");
+					}
+
+					@Override
+					public void onSuccess(Boolean codeCorrect) {
+						if (codeCorrect) {
+							insert();
+
+						} else {
+							Window.alert("Not a valid code.");
+						}
+					}
+				});
+			}
+
+		}
 
 		public void insert() {
 			String FirstName = "'" + fnameTxt.getText().trim() + "',";
@@ -280,7 +382,7 @@ public class PageNewUser extends Composite {
 				@Override
 				public void onFailure(Throwable caught) {
 					// TODO Auto-generated method stub
-					Window.alert("Database connection failure! Please contact admin!");
+					Window.alert("Database connection failure! Please contact Admin.");
 				}
 
 				@Override
@@ -290,24 +392,14 @@ public class PageNewUser extends Composite {
 						Window.alert("Record inserted successfully!.");
 						RootPanel.get("test").remove(entryPoint.pageNewUser);
 						RootPanel.get("test").add(entryPoint.loginParentPanel);
+
 					} else {
-						Window.alert("Record insert error!.");
-						Window.Location.reload();
+						Window.alert("Record insert error! Please contact Admin.");
+						// Window.Location.reload();
 					}
 
 				}
 			});
-		}
-	}
-
-	private class cancelBtnClickHandler implements ClickHandler {
-
-		@Override
-		public void onClick(ClickEvent event) {
-
-			RootPanel.get("test").remove(entryPoint.pageNewUser);
-			RootPanel.get("test").add(entryPoint.loginParentPanel);
-
 		}
 	}
 }
