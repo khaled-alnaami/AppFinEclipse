@@ -61,7 +61,7 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		// TODO Auto-generated method stub
 		super.init();
 		try {
-			System.out.println("Try block from inside the mysql conn constructor.");
+//			System.out.println("Try block from inside the mysql conn constructor.");
 			Class.forName("com.mysql.jdbc.Driver");// .newInstance();
 			conn = DriverManager.getConnection(url, user, pass);
 		} catch (Exception e) {
@@ -73,11 +73,11 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 	public User authenticateUser(String username, String pass) {
 		boolean validUser = false;
-		System.out.println("inside authenticateUser");
+//		System.out.println("inside authenticateUser");
 		User user = new User(username, pass);
 		String sqlCmd = "select * from tblUser where username = \"" + username + "\" AND " + "userpassword = \"" + pass
 				+ "\"";
-		System.out.println("sql cmd: " + sqlCmd);
+//		System.out.println("sql cmd: " + sqlCmd);
 		try {
 
 			conn = DriverManager.getConnection(url, this.user, this.pass);
@@ -118,10 +118,10 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 	@Override
 	public Boolean insertOrUpdate(String sqlCmd) {
 		boolean validInsertOrUpdate = false;
-		System.out.println("inside insert or update records.");
+//		System.out.println("inside insert or update records.");
 		PreparedStatement ps = null;
 
-		System.out.println("sql cmd: " + sqlCmd);
+//		System.out.println("sql cmd: " + sqlCmd);
 		try {
 			conn = DriverManager.getConnection(url, this.user, this.pass);
 
@@ -157,20 +157,20 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		PreparedStatement ps = null;
 		String uuid = UUID.randomUUID().toString();
 		String code = uuid.split("-")[0];
-		System.out.println("code: " + code);
+//		System.out.println("code: " + code);
 
 		String sqlCmd = "insert into tblCodes (Code) values ('" + code + "')";
 		boolean validInsertOrUpdate = insertOrUpdate(sqlCmd);
 
-		String msg = "Hi, \nHere is your code: " + code
-				+ " \nThank you. \n Big Data Analytics and Management Lab. Computer Science. UT Dallas.";
-		msg = code;
+		String msg = "Dear New User, \n\nHere is your code: " + code
+				+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Analytics and Management Lab. \nComputer Science. \nUT Dallas.";
+
 		String subject = "Your code from the Big Data Analytics and Management Lab.";
 		
-//		sendEmail(link, emailto, subject, msg);
+		sendEmail(link, emailto, subject, msg);
 		
-		String from = "dml.utd@utdallas.edu";
-		sendEMail2(from, emailto, from, subject, msg);
+//		String from = "dml.utd@utdallas.edu";
+//		sendEMail2(from, emailto, from, subject, msg);
 
 		return validInsertOrUpdate;
 	}
@@ -214,7 +214,7 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 	public Boolean checkRecord(String sqlCmd) {
 		boolean recordExists = false;
-		System.out.println("sql cmd: " + sqlCmd);
+//		System.out.println("sql cmd: " + sqlCmd);
 		try {
 
 			conn = DriverManager.getConnection(url, this.user, this.pass);
@@ -273,15 +273,20 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 			Transport.send(message);
 
-			System.out.println("Done");
+			System.out.println("Send Email Done");
 
 		} catch (MessagingException e) {
 			System.out.println("sendEmail MessagingException"+e.getMessage());
+			e.printStackTrace();
 		} catch (RuntimeException e) {
 			System.out.println("sendEmail RuntimeException"+e.getMessage());
+			e.printStackTrace();
 		}
 		catch (Exception e) {
 			System.out.println("sendEmail Exception"+e.getMessage());
+                
+            System.out.println(e.toString());
+            e.printStackTrace();
 		}
 	}
 	

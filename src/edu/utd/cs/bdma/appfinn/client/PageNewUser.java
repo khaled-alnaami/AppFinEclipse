@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.appengine.api.images.Image;
-import com.google.appengine.api.images.ImagesServicePb.ImagesCompositeRequest.Builder;
+//import com.google.appengine.api.images.Image;
+//import com.google.appengine.api.images.ImagesServicePb.ImagesCompositeRequest.Builder;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
