@@ -200,8 +200,8 @@ public class PageNewUser extends Composite {
 		}
 
 		private void generateCodeSendEmail() {
-
-			rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), new AsyncCallback<Boolean>() {
+			String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
+			rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), link, new AsyncCallback<Boolean>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Error generating code! Please contact Admin.");

@@ -5,9 +5,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.Vector;
 
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 
 import com.google.gwt.http.client.Request;
@@ -15,6 +25,7 @@ import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -142,7 +153,7 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 	}
 
 	@Override
-	public Boolean generateCodeSendEmail(String emailto) {
+	public Boolean generateCodeSendEmail(String emailto, String link) {
 		PreparedStatement ps = null;
 		String uuid = UUID.randomUUID().toString();
 		String code = uuid.split("-")[0];
@@ -153,38 +164,53 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 		String msg = "Hi, \nHere is your code: " + code
 				+ " \nThank you. \n Big Data Analytics and Management Lab. Computer Science. UT Dallas.";
+		msg = code;
 		String subject = "Your code from the Big Data Analytics and Management Lab.";
-		sendEmail(emailto, subject, msg);
+		
+//		sendEmail(link, emailto, subject, msg);
+		
+		String from = "dml.utd@utdallas.edu";
+		sendEMail2(from, emailto, from, subject, msg);
 
 		return validInsertOrUpdate;
 	}
-
-	private void sendEmail(String emailto, String subject, String msg) {
-		String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
-		String parameters = "?emailto=" + emailto;
-		parameters += "&subject=" + subject;
-		parameters += "&msg=" + msg;
-		String url = link + "email" + parameters;
-		System.out.println("email url: " + url);
-
-		// Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
-
-		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
-		try {
-			Request response = builder.sendRequest(null, new RequestCallback() {
-				public void onError(Request request, Throwable exception) {
-					Window.alert("Send Email failed. " + exception.toString());
-				}
-
-				public void onResponseReceived(Request request, Response response) {
-					Window.alert("Send Email succeded. ");
-				}
-			});
-		} catch (RequestException e) {
-			e.printStackTrace();
-		}
-
-	}
+//
+//	private void sendEmail(String link, String emailto, String subject, String msg) {
+//		
+////		String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
+////		System.out.println("link: " + link);
+//		String parameters = "?emailto=" + emailto;
+////		System.out.println("parameters1: " + parameters);
+//		parameters += "&subject=" + subject;
+////		System.out.println("parameters2: " + parameters);
+//		parameters += "&msg=" + msg;
+////		System.out.println("parameters3: " + parameters);
+//		String url = link + "email" + parameters;
+////		System.out.println("email url: " + url);
+//
+//		// Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+//
+//		
+//		
+//		try {
+//			RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, URL.encode(url));
+//			Request response = builder.sendRequest(null, new RequestCallback() {
+//				public void onError(Request request, Throwable exception) {
+//					Window.alert("Send Email failed. " + exception.toString());
+//				}
+//
+//				public void onResponseReceived(Request request, Response response) {
+//					Window.alert("Send Email succeded. ");
+//				}
+//			});
+//		} catch (RequestException e) {
+//			System.out.println("inside sendEmail request exception: " + e.getMessage());
+//		} catch (Exception e){
+//			System.out.println("inside seneEmail exception: " + e.getMessage());
+//		}
+//
+//		
+//	}
 
 	public Boolean checkRecord(String sqlCmd) {
 		boolean recordExists = false;
@@ -218,4 +244,68 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 		return recordExists;
 	}
+	
+	public void sendEmail(String link, String emailto, String subject, String msg){
+		final String username = "dml.utd@gmail.com";
+		final String password = "dml12345";
+
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "587");
+
+		Session session = Session.getInstance(props,
+		  new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(username, password);
+			}
+		  });
+
+		try {
+
+			Message message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(username));
+			message.setRecipients(Message.RecipientType.TO,
+				InternetAddress.parse(emailto));
+			message.setSubject(subject);
+			message.setText(msg);
+
+			Transport.send(message);
+
+			System.out.println("Done");
+
+		} catch (MessagingException e) {
+			System.out.println("sendEmail MessagingException"+e.getMessage());
+		} catch (RuntimeException e) {
+			System.out.println("sendEmail RuntimeException"+e.getMessage());
+		}
+		catch (Exception e) {
+			System.out.println("sendEmail Exception"+e.getMessage());
+		}
+	}
+	
+	public String sendEMail2(String from, String to, String replyTo, String subject, String message) {
+        String output=null;
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(from, "Gmail.com Admin"));
+            msg.addRecipient(Message.RecipientType.TO,
+                             new InternetAddress(to, "Mr. User"));
+            msg.setSubject(subject);
+            msg.setText(message);
+            msg.setReplyTo(new InternetAddress[]{new InternetAddress(replyTo)});
+            Transport.send(msg);
+
+        } catch (Exception e) {
+            output=e.toString();    
+            System.out.println(output);
+            e.printStackTrace();
+        }   
+        return output;
+    }
+	
 }

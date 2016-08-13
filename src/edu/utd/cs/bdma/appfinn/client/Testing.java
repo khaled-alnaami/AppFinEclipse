@@ -20,7 +20,12 @@ public class Testing {
 //		String pass = "khale@d.1_Ac@@";
 //		System.out.println("Is " + pass + " a valid password? "+nameValidator.validate(pass));
 		
-	
+		String parameters = "?emailto=" + "emailto";
+		parameters += "&subject=" + "subject";
+		parameters += "&msg=" + "msg";
+		String url = "link:" + "email" + parameters;
+		System.out.println(url);
+		System.out.println("&amp;");
 	}
 
 }
