@@ -75,6 +75,8 @@ public class PageNewUser extends Composite {
 	HashMap<Object, String> validControlList = new HashMap<Object, String>();
 
 	String emailCode = "";
+	
+	
 
 	public PageNewUser(AppFin entryPoint) {
 		this.entryPoint = entryPoint;
@@ -174,6 +176,7 @@ public class PageNewUser extends Composite {
 	}
 
 	private class submitBtnClickHandler implements ClickHandler {
+		public boolean isDuplicateDBEntry = false;
 
 		@Override
 		public void onClick(ClickEvent event) {
@@ -231,6 +234,14 @@ public class PageNewUser extends Composite {
 				return false;
 			}
 
+			// check database if same email or username
+			System.out.println("before duplicate");
+			if (duplicateDBEntryDetected()) {
+				System.out.println("after duplicate");
+				Window.alert("Email and/or username have been already used. Please use (an)other one(s).");
+				return false;
+			}
+			
 			if (passwordMismatch()) {
 				Window.alert("Please make sure both passwords match.");
 				return false;
@@ -239,6 +250,40 @@ public class PageNewUser extends Composite {
 			return true;
 		}
 
+		private boolean duplicateDBEntryDetected() {
+			isDuplicateDBEntry = false;
+			
+			System.out.println("inside duplicate");
+			String sqlCmd = "select * from tblUser where Email = '" + emailTxt.getText().trim() + "' or UserName = '" + userNameTxt.getText().trim()+ "';";
+			System.out.println("duplicate sqlCmd: " + sqlCmd);
+			rpcDB.checkRecord(sqlCmd, new AsyncCallback<Boolean>() {
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Error checking duplicate Database entry! Please contact Admin.");
+				}
+
+				@Override
+				public void onSuccess(Boolean duplicateEntry) {					
+					if (duplicateEntry == true) {
+						
+						emailCodeTxt.setText("inside onSuccess");
+					} 
+				}
+
+
+			});
+			
+//			emailCodeTxt.setText(((Boolean)isDuplicateDBEntry).toString());
+//			emailCodeTxt.setText("gv" + ((Boolean)gv.isDuplicateDBEntry()).toString());
+//			emailCodeTxt.setText(Double.toString(isDupDouble[1]));
+			if (emailCodeTxt.getText().trim().equals("inside onSuccess")){
+				isDuplicateDBEntry = true;
+				emailCodeTxt.getText().trim().equals("inside onSuccess");
+			}
+			return isDuplicateDBEntry;
+		}
+	
 		private boolean requiredFieldDetected() {
 			requiredControlsList = new ArrayList<Object>();
 
@@ -340,7 +385,7 @@ public class PageNewUser extends Composite {
 			if (Utils.CheckRequiredField(requiredControlsList)) {
 				Window.alert("Please fill in required field(s).");
 			} else {
-				String sqlCmd = "select * from tblCodes where Code = '" + emailCodeTxt.getText().trim() + "';";
+				String sqlCmd = "select * from tblCodes where Code = '" + emailCodeTxt.getText().trim() + "' and Email = '" +emailTxt.getText().trim()+ "';";
 				rpcDB.checkRecord(sqlCmd, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {

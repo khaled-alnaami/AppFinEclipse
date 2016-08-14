@@ -159,7 +159,7 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		String code = uuid.split("-")[0];
 //		System.out.println("code: " + code);
 
-		String sqlCmd = "insert into tblCodes (Code) values ('" + code + "')";
+		String sqlCmd = "insert into tblCodes (Code, Email) values ('" + code + "', '" + emailto + "')";
 		boolean validInsertOrUpdate = insertOrUpdate(sqlCmd);
 
 		String msg = "Dear New User, \n\nHere is your code: " + code
@@ -214,7 +214,7 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 	public Boolean checkRecord(String sqlCmd) {
 		boolean recordExists = false;
-//		System.out.println("sql cmd: " + sqlCmd);
+		System.out.println("sql cmd: " + sqlCmd);
 		try {
 
 			conn = DriverManager.getConnection(url, this.user, this.pass);
@@ -241,7 +241,7 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 				System.out.println(e.getMessage());
 			}
 		}
-
+//		System.out.println("recordExists: " + recordExists);
 		return recordExists;
 	}
 	
