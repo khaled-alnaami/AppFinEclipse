@@ -129,7 +129,7 @@ public class AppFin implements EntryPoint {
 	private Label numTrialsLabel = new Label("Trials");
 
 	private Label collectionProgress = new Label("Progress ..."); // Khaled
-	private Label analyticsReplyLabel = null;
+//	private Label analyticsReplyLabel = null;
 
 	private ListBox folderList = new ListBox();
 	private ListBox appList = new ListBox();
@@ -251,7 +251,7 @@ public class AppFin implements EntryPoint {
 		loginButtonPanel.add(aNewUser);
 		
 		// forgot password
-		aForgotPassword.setHTML("<p> Create an account </p>");
+		aForgotPassword.setHTML("<p> Forgot Password? </p>");
 		aForgotPassword.addClickHandler(new aForgotPasswordClickHandler(this));
 		aForgotPassword.getElement().getStyle().setCursor(Cursor.POINTER);
 		loginButtonPanel.add(aForgotPassword);
@@ -993,16 +993,58 @@ public class AppFin implements EntryPoint {
 	}
 	
 	private void setStyle() {
-		// TODO Auto-generated method stub
+		
+		// textboxes
 		userTextBox.setStyleName("TextBox");
 		passTextBox.setStyleName("TextBox");
+		bucketTextBox.setStyleName("TextBox");
+		appTextBox.setStyleName("TextBox");
+		trialTextBox.setStyleName("TextBox");
+		trainingTextBox.setStyleName("TextBox");
+		testingTextBox.setStyleName("TextBox");
 		
+		
+		// labels
 		userLabel.setStyleName("Labels");
 		passLabel.setStyleName("Labels");
+
+		tempLabel.setStyleName("Labels");
+		testLabel.setStyleName("Labels");
+		classifierLabel.setStyleName("Labels");
+		defenseLabel.setStyleName("Labels");
+		datasetLabel.setStyleName("Labels");
+		numAppsLabel.setStyleName("Labels");
+		bucketLabel.setStyleName("Labels");
+		numTrainingLabel.setStyleName("Labels");
+		numTestingLabel.setStyleName("Labels");
+		numTrialsLabel.setStyleName("Labels");
+
+		collectionProgress.setStyleName("Labels");
 		
+		// buttons
 		loginButton.setStyleName("Button_White");
 		loginButton.getElement().getStyle().setCursor(Cursor.POINTER);
+	
+		downloadButton.setStyleName("Button_White");
+		downloadButton.getElement().getStyle().setCursor(Cursor.POINTER);
 		
+		refreshButton.setStyleName("Button_White");
+		refreshButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		addAppButton.setStyleName("Button_White");
+		addAppButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		doneButton.setStyleName("Button_White");
+		doneButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		analyticsButton.setStyleName("Button_White");
+		analyticsButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		clearButton.setStyleName("Button_White");
+		clearButton.getElement().getStyle().setCursor(Cursor.POINTER);
+		
+		clearAnalyticsButton.setStyleName("Button_White");
+		clearAnalyticsButton.getElement().getStyle().setCursor(Cursor.POINTER);
 		
 	}
 

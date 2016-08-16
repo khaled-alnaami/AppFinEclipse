@@ -41,7 +41,7 @@ public class PageForgotPassword extends Composite {
 
 	Button cancelBtn = new Button("Cancel");
 
-	CaptionPanel cPanel = new CaptionPanel("New User");
+	CaptionPanel cPanel = new CaptionPanel("Enter Email");
 
 	// Database
 	private final DBConnectionAsync rpcDB = (DBConnectionAsync) GWT.create(DBConnection.class);
@@ -162,8 +162,8 @@ public class PageForgotPassword extends Composite {
 
 		void validateEmail() {
 			String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
-			String sqlCmd = "select * from tblUser where Email = '" + emailTxt.getText().trim() + "';";
-			rpcDB.checkRecordSendEmail(sqlCmd, link, new AsyncCallback<Boolean>() {
+			String email = emailTxt.getText().trim();
+			rpcDB.checkRecordSendEmail(email, link, new AsyncCallback<Boolean>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Error checking email in Database entry! Please contact Admin.");
@@ -172,11 +172,11 @@ public class PageForgotPassword extends Composite {
 				@Override
 				public void onSuccess(Boolean validEmail) {
 					if (validEmail == true) {
-						Window.alert("The username and password has been sent to your email.");
+						Window.alert("The username and password have been sent to your email.");
 						RootPanel.get("test").remove(entryPoint.pageForgotPassword);
 						RootPanel.get("test").add(entryPoint.loginParentPanel);
 					} else {
-						
+						Window.alert("Sorry. We don't recognize that email.");
 					}
 				}
 			});
@@ -190,27 +190,10 @@ public class PageForgotPassword extends Composite {
 		@Override
 		public void onClick(ClickEvent event) {
 
-			RootPanel.get("test").remove(entryPoint.pageNewUser);
+			RootPanel.get("test").remove(entryPoint.pageForgotPassword);
 			RootPanel.get("test").add(entryPoint.loginParentPanel);
 
 		}
 	}
 
-
-
-	private void generateCodeSendEmail() {
-		String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
-		rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), link, new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("Error generating code! Please contact Admin.");
-			}
-
-			@Override
-			public void onSuccess(Boolean code) {
-				Window.alert("Please check your email, fill in the Email Code, and Verify.");
-			}
-		});
-
-	}
 }

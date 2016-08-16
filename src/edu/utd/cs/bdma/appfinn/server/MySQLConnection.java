@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.Vector;
@@ -242,7 +243,8 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		return recordExists;
 	}
 	
-	public String getField(String sqlCmd, String column) {
+	public String [] getFields(String sqlCmd, String [] columnNames) {
+		String [] columnValues = new String[columnNames.length];
 		String recordStr = "";
 		boolean recordExists = false;
 		System.out.println("get record sql cmd: " + sqlCmd);
@@ -255,7 +257,13 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 			ResultSet result = ps.executeQuery();
 
 			while (result.next()) {
-				recordStr = result.getString(column);
+				System.out.println("UserName"+result.getString("UserName"));
+				System.out.println("UserPassword"+result.getString("UserPassword"));
+				int i = 0;
+				for (String columnName : columnNames){
+					columnValues[i++] = result.getString(columnName);
+				}
+//				recordStr = result.getString(column);
 			}
 			result.close();
 			ps.close();
@@ -272,8 +280,8 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 				System.out.println(e.getMessage());
 			}
 		}
-//		System.out.println("recordExists: " + recordExists);
-		return recordStr;
+		System.out.println("returned columnValues: " + Arrays.toString(columnValues));
+		return columnValues;
 	}
 
 	
@@ -324,23 +332,24 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 	
 	@Override
 	public Boolean checkRecordSendEmail(String email, String link) {
-		String pass = "";
+
 		boolean validEmail = false;
 		String sqlCmd = "select * from tblUser where Email = '" + email + "';";
-		String fields
-		pass = getFields(sqlCmd, "UserPassword");
-		
-		String msg = "Dear User, \n\nHere is your password: " + pass
-				+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Analytics and Management Lab. \nComputer Science. \nUT Dallas.";
-
-		String subject = "Your code from the Big Data Analytics and Management Lab.";
-		if (!pass.isEmpty()){
+		String columnNames [] = {"UserName", "UserPassword"}; // get username and password
+		String [] columnValues = getFields(sqlCmd, columnNames);
+		System.out.print("columnValues: " + Arrays.toString(columnValues)); // [null, null] if no data returned from DB
+		if (columnValues[0] != null || columnValues[1] != null){			
 			validEmail = true;
+			
+			String msg = "Dear User, \n\nHere is the data you requested:\nUsername: " + columnValues[0] + "\nPa$$w0rd: " + columnValues[1] + ""
+					+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Analytics and Management Lab. \nComputer Science. \nUT Dallas.";
+
+			String subject = "Your data from the Big Data Analytics and Management Lab.";
+						
 			sendEmail(link, email, subject, msg);
 		}
 		
 		return validEmail;
 	}
-	
-	
+		
 }
