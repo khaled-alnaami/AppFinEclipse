@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -28,8 +29,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PageNewUser extends Composite {
 	VerticalPanel vPanel = new VerticalPanel();
+	VerticalPanel newUserCPPanel = new VerticalPanel();
 	VerticalPanel newUserPanel = new VerticalPanel();
 	HorizontalPanel submitButtonPanel = new HorizontalPanel();
+	VerticalPanel loadingImagePanel = new VerticalPanel();
 
 	Grid g = new Grid(7, 2);
 	Grid gValidateCode = new Grid(1, 2);
@@ -58,9 +61,15 @@ public class PageNewUser extends Composite {
 	Label emailCodeLbl = new Label("Email Code");
 	TextBox emailCodeTxt = new TextBox();
 
+	// loading image
+	Image loadingImage = new Image();
+
 	Button submitBtn = new Button("Submit");
 
 	Button cancelBtn = new Button("Cancel");
+	
+	Button generateCodeBtn = new Button("Generate Code");
+	
 	Button verifyBtn = new Button("Verify");
 
 	CaptionPanel newUserCP = new CaptionPanel("New User");
@@ -75,12 +84,14 @@ public class PageNewUser extends Composite {
 	HashMap<Object, String> validControlList = new HashMap<Object, String>();
 
 	String emailCode = "";
-	
-	
+
+//	TextBox isDuplicateDBEntryTxt = new TextBox();
 
 	public PageNewUser(AppFin entryPoint) {
 		this.entryPoint = entryPoint;
 		initWidget(this.vPanel);
+
+//		isDuplicateDBEntryTxt.setText("");
 
 		newUserCP.addStyleName("loginCP");
 
@@ -118,7 +129,7 @@ public class PageNewUser extends Composite {
 		gValidateCode.setVisible(false);
 		newUserPanel.add(gValidateCode);
 
-		// empty line seperator
+		// empty line separator
 		newUserPanel.add(new HTML("<table><tr>" + "<td colspan=\"100\">" + "</td>"
 				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
 
@@ -137,7 +148,20 @@ public class PageNewUser extends Composite {
 		submitButtonPanel.add(cancelBtn);
 
 		newUserPanel.add(submitButtonPanel);
-		newUserCP.add(newUserPanel);
+		newUserCPPanel.add(newUserPanel);
+
+		// set image source
+		loadingImage.setUrl("images/loading.gif");
+		loadingImagePanel.add(loadingImage);
+		loadingImagePanel.setVisible(false);
+		newUserCPPanel.add(loadingImagePanel);
+
+//		newUserCPPanel.add(isDuplicateDBEntryTxt);
+		generateCodeBtn.setVisible(false);
+		newUserCPPanel.add(generateCodeBtn);
+		generateCodeBtn.addClickHandler(new generateCodeBtnClickHandler());
+
+		newUserCP.add(newUserCPPanel);
 
 		vPanel.addStyleName("center");
 		vPanel.add(newUserCP);
@@ -176,47 +200,75 @@ public class PageNewUser extends Composite {
 	}
 
 	private class submitBtnClickHandler implements ClickHandler {
-		public boolean isDuplicateDBEntry = false;
 
 		@Override
 		public void onClick(ClickEvent event) {
 			if (validateData()) {
-				validateEmailCode();
+				validateDuplicateDBRecords();
+//				if (validateDuplicateDBRecords()) {
+//					validateEmailCode();
+//				}
 			}
 
 		}
 
-		private void validateEmailCode() {
-			submitBtn.setVisible(false);
-			g.setVisible(false);
-			gValidateCode.setVisible(true);
-			verifyBtn.setVisible(true);
-
-			generateCodeSendEmail();
-
-			// sendEmail();
-			// checkCode(); button
-
-			// Window.alert("Please check your email, fill in the Email Code,
-			// and Verify.");
+		private void validateDuplicateDBRecords() {
+			// check database if same email or username
+			// if (duplicateDBEntryDetected().equals("YES")) {
+			// Window.alert("Email and/or username have been already used.
+			// Please use (an)other one(s).");
 			// return false;
+			// }
+
+			duplicateDBEntryDetected();
+
+//			while (!isDuplicateDBEntryTxt.getText().equals("YES")) {
+//				// wait until duplicateDBEntryDetected async call is done
+//				if (newUserPanel.isVisible() || isDuplicateDBEntryTxt.getText().equals("YES")){
+//					break;
+//				}
+//			}
+//
+//			if (isDuplicateDBEntryTxt.getText().trim().equals("YES")) {
+//				Window.alert("Email and/or username have been already used. Please use (an)other one(s).");
+//				newUserPanel.setVisible(true);
+//				loadingImagePanel.setVisible(false);
+//				return false;
+//			}
+//			return true;
 		}
 
-		private void generateCodeSendEmail() {
-			String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
-			rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), link, new AsyncCallback<Boolean>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert("Error generating code! Please contact Admin.");
-				}
-
-				@Override
-				public void onSuccess(Boolean code) {
-					Window.alert("Please check your email, fill in the Email Code, and Verify.");
-				}
-			});
-
-		}
+//		private void validateEmailCode() {
+//			submitBtn.setVisible(false);
+//			g.setVisible(false);
+//			gValidateCode.setVisible(true);
+//			verifyBtn.setVisible(true);
+//
+//			generateCodeSendEmail();
+//
+//			// sendEmail();
+//			// checkCode(); button
+//
+//			// Window.alert("Please check your email, fill in the Email Code,
+//			// and Verify.");
+//			// return false;
+//		}
+//
+//		private void generateCodeSendEmail() {
+//			String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
+//			rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), link, new AsyncCallback<Boolean>() {
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					Window.alert("Error generating code! Please contact Admin.");
+//				}
+//
+//				@Override
+//				public void onSuccess(Boolean code) {
+//					Window.alert("Please check your email, fill in the Email Code, and Verify.");
+//				}
+//			});
+//
+//		}
 
 		public boolean validateData() {
 			// code to validate data entry
@@ -234,14 +286,6 @@ public class PageNewUser extends Composite {
 				return false;
 			}
 
-			// check database if same email or username
-			System.out.println("before duplicate");
-			if (duplicateDBEntryDetected()) {
-				System.out.println("after duplicate");
-				Window.alert("Email and/or username have been already used. Please use (an)other one(s).");
-				return false;
-			}
-			
 			if (passwordMismatch()) {
 				Window.alert("Please make sure both passwords match.");
 				return false;
@@ -250,40 +294,53 @@ public class PageNewUser extends Composite {
 			return true;
 		}
 
-		private boolean duplicateDBEntryDetected() {
-			isDuplicateDBEntry = false;
-			
+		private void duplicateDBEntryDetected() {
+
 			System.out.println("inside duplicate");
-			String sqlCmd = "select * from tblUser where Email = '" + emailTxt.getText().trim() + "' or UserName = '" + userNameTxt.getText().trim()+ "';";
+			String sqlCmd = "select * from tblUser where Email = '" + emailTxt.getText().trim() + "' or UserName = '"
+					+ userNameTxt.getText().trim() + "';";
 			System.out.println("duplicate sqlCmd: " + sqlCmd);
+
+			newUserPanel.setVisible(false);
+			loadingImagePanel.setVisible(true);
+
 			rpcDB.checkRecord(sqlCmd, new AsyncCallback<Boolean>() {
-				
+
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert("Error checking duplicate Database entry! Please contact Admin.");
+					newUserPanel.setVisible(true);
+					loadingImagePanel.setVisible(false);
 				}
 
 				@Override
-				public void onSuccess(Boolean duplicateEntry) {					
+				public void onSuccess(Boolean duplicateEntry) {
 					if (duplicateEntry == true) {
-						
-						emailCodeTxt.setText("inside onSuccess");
-					} 
+						Window.alert("Email and/or username have been already used. Please use (an)other one(s).");
+					} else {
+						// fire button click
+						generateCodeBtn.click();
+					}
+					newUserPanel.setVisible(true);
+					loadingImagePanel.setVisible(false);
 				}
 
-
 			});
-			
-//			emailCodeTxt.setText(((Boolean)isDuplicateDBEntry).toString());
-//			emailCodeTxt.setText("gv" + ((Boolean)gv.isDuplicateDBEntry()).toString());
-//			emailCodeTxt.setText(Double.toString(isDupDouble[1]));
-			if (emailCodeTxt.getText().trim().equals("inside onSuccess")){
-				isDuplicateDBEntry = true;
-				emailCodeTxt.getText().trim().equals("inside onSuccess");
-			}
-			return isDuplicateDBEntry;
+
+			// newUserPanel.setVisible(false);
+			// loadingImagePanel.setVisible(true);
+
+			// emailCodeTxt.setText(((Boolean)isDuplicateDBEntry).toString());
+			// emailCodeTxt.setText("gv" +
+			// ((Boolean)gv.isDuplicateDBEntry()).toString());
+			// emailCodeTxt.setText(Double.toString(isDupDouble[1]));
+			// if (emailCodeTxt.getText().trim().equals("inside onSuccess")){
+			// isDuplicateDBEntry = true;
+			// emailCodeTxt.getText().trim().equals("inside onSuccess");
+			// }
+			// return isDuplicateDBEntry;
 		}
-	
+
 		private boolean requiredFieldDetected() {
 			requiredControlsList = new ArrayList<Object>();
 
@@ -385,7 +442,8 @@ public class PageNewUser extends Composite {
 			if (Utils.CheckRequiredField(requiredControlsList)) {
 				Window.alert("Please fill in required field(s).");
 			} else {
-				String sqlCmd = "select * from tblCodes where Code = '" + emailCodeTxt.getText().trim() + "' and Email = '" +emailTxt.getText().trim()+ "';";
+				String sqlCmd = "select * from tblCodes where Code = '" + emailCodeTxt.getText().trim()
+						+ "' and Email = '" + emailTxt.getText().trim() + "';";
 				rpcDB.checkRecord(sqlCmd, new AsyncCallback<Boolean>() {
 					@Override
 					public void onFailure(Throwable caught) {
@@ -446,5 +504,45 @@ public class PageNewUser extends Composite {
 				}
 			});
 		}
+	}
+	
+	private class generateCodeBtnClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent event) {
+			validateEmailCode();
+		}
+	}
+	
+	private void validateEmailCode() {
+		submitBtn.setVisible(false);
+		g.setVisible(false);
+		gValidateCode.setVisible(true);
+		verifyBtn.setVisible(true);
+
+		generateCodeSendEmail();
+
+		// sendEmail();
+		// checkCode(); button
+
+		// Window.alert("Please check your email, fill in the Email Code,
+		// and Verify.");
+		// return false;
+	}
+
+	private void generateCodeSendEmail() {
+		String link = "http://" + Window.Location.getHostName() + ":" + Window.Location.getPort() + "/appfin/";
+		rpcDB.generateCodeSendEmail(emailTxt.getText().trim(), link, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Error generating code! Please contact Admin.");
+			}
+
+			@Override
+			public void onSuccess(Boolean code) {
+				Window.alert("Please check your email, fill in the Email Code, and Verify.");
+			}
+		});
+
 	}
 }

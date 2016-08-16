@@ -139,6 +139,7 @@ public class AppFin implements EntryPoint {
 	private ListBox featureList = new ListBox();
 
 	private Anchor aNewUser = new Anchor();
+	private Anchor aForgotPassword = new Anchor();
 
 	private ArrayList<String> selectedItems = new ArrayList<String>();
 	private FlexTable flexTable = new FlexTable();
@@ -180,6 +181,7 @@ public class AppFin implements EntryPoint {
 	private final DBConnectionAsync rpcDB = (DBConnectionAsync) GWT.create(DBConnection.class);
 
 	PageNewUser pageNewUser = null;
+	PageForgotPassword pageForgotPassword = null;
 
 	ArrayList<TextBox> requiredControlsList = new ArrayList<TextBox>();
 
@@ -247,6 +249,12 @@ public class AppFin implements EntryPoint {
 		aNewUser.addClickHandler(new aNewUserClickHandler(this));
 		aNewUser.getElement().getStyle().setCursor(Cursor.POINTER);
 		loginButtonPanel.add(aNewUser);
+		
+		// forgot password
+		aForgotPassword.setHTML("<p> Create an account </p>");
+		aForgotPassword.addClickHandler(new aForgotPasswordClickHandler(this));
+		aForgotPassword.getElement().getStyle().setCursor(Cursor.POINTER);
+		loginButtonPanel.add(aForgotPassword);
 
 		// Associate the Main panel with the HTML host page.
 		RootPanel.get("test").add(loginParentPanel);
@@ -967,6 +975,23 @@ public class AppFin implements EntryPoint {
 		}
 	}
 
+	private class aForgotPasswordClickHandler implements ClickHandler {
+
+		AppFin entryPoint = null;
+
+		public aForgotPasswordClickHandler(AppFin entryPoint) {
+			this.entryPoint = entryPoint;
+		}
+
+		@Override
+		public void onClick(ClickEvent event) {
+			pageForgotPassword = new PageForgotPassword(entryPoint);
+			RootPanel.get("test").remove(loginParentPanel);
+			RootPanel.get("test").add(pageForgotPassword);
+
+		}
+	}
+	
 	private void setStyle() {
 		// TODO Auto-generated method stub
 		userTextBox.setStyleName("TextBox");

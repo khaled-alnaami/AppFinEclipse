@@ -168,9 +168,6 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		String subject = "Your code from the Big Data Analytics and Management Lab.";
 		
 		sendEmail(link, emailto, subject, msg);
-		
-//		String from = "dml.utd@utdallas.edu";
-//		sendEMail2(from, emailto, from, subject, msg);
 
 		return validInsertOrUpdate;
 	}
@@ -245,6 +242,41 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		return recordExists;
 	}
 	
+	public String getField(String sqlCmd, String column) {
+		String recordStr = "";
+		boolean recordExists = false;
+		System.out.println("get record sql cmd: " + sqlCmd);
+		try {
+
+			conn = DriverManager.getConnection(url, this.user, this.pass);
+
+			// System.out.println(conn.toString());
+			PreparedStatement ps = conn.prepareStatement(sqlCmd);
+			ResultSet result = ps.executeQuery();
+
+			while (result.next()) {
+				recordStr = result.getString(column);
+			}
+			result.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			// do stuff on fail
+			System.out.println(sqle.toString());
+		} catch (Exception e) {
+			System.out.println(e.toString());
+			System.out.println(e.getMessage());
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+//		System.out.println("recordExists: " + recordExists);
+		return recordStr;
+	}
+
+	
 	public void sendEmail(String link, String emailto, String subject, String msg){
 		final String username = "dml.utd@gmail.com";
 		final String password = "dml12345";
@@ -290,27 +322,25 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		}
 	}
 	
-	public String sendEMail2(String from, String to, String replyTo, String subject, String message) {
-        String output=null;
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
+	@Override
+	public Boolean checkRecordSendEmail(String email, String link) {
+		String pass = "";
+		boolean validEmail = false;
+		String sqlCmd = "select * from tblUser where Email = '" + email + "';";
+		String fields
+		pass = getFields(sqlCmd, "UserPassword");
+		
+		String msg = "Dear User, \n\nHere is your password: " + pass
+				+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Analytics and Management Lab. \nComputer Science. \nUT Dallas.";
 
-        try {
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress(from, "Gmail.com Admin"));
-            msg.addRecipient(Message.RecipientType.TO,
-                             new InternetAddress(to, "Mr. User"));
-            msg.setSubject(subject);
-            msg.setText(message);
-            msg.setReplyTo(new InternetAddress[]{new InternetAddress(replyTo)});
-            Transport.send(msg);
-
-        } catch (Exception e) {
-            output=e.toString();    
-            System.out.println(output);
-            e.printStackTrace();
-        }   
-        return output;
-    }
+		String subject = "Your code from the Big Data Analytics and Management Lab.";
+		if (!pass.isEmpty()){
+			validEmail = true;
+			sendEmail(link, email, subject, msg);
+		}
+		
+		return validEmail;
+	}
+	
 	
 }

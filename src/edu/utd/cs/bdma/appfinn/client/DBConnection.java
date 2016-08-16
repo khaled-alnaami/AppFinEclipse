@@ -12,4 +12,6 @@ public interface DBConnection extends RemoteService {
 	public Boolean insertOrUpdate(String sqlCmd);
 	public Boolean generateCodeSendEmail(String email, String link);
 	public Boolean checkRecord(String sqlCmd);
+	public String getField(String sqlCmd, String column);
+	public Boolean checkRecordSendEmail(String email, String link);
 }

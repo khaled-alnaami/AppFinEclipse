@@ -8,4 +8,7 @@ public interface DBConnectionAsync {
 	public void insertOrUpdate(String sqlCmd, AsyncCallback<Boolean> callback);
 	public void generateCodeSendEmail(String email, String link, AsyncCallback<Boolean> callback);
 	public void checkRecord(String sqlCmd, AsyncCallback<Boolean> callback);
+	public void getField(String sqlCmd, String column, AsyncCallback<String> callback);
+	public void checkRecordSendEmail(String email, String link, AsyncCallback<Boolean> callback);
+	
 }
