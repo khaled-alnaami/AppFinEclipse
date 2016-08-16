@@ -58,7 +58,7 @@ public class PageDocs extends Composite {
 		public void onClick(ClickEvent event) {
 			String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
 			String docsServlet = "downloadDocs";
-			String fileInfo = "?filename=userManual.pdf";
+			String fileInfo = "?filename=Documentation.pdf";
 			
 			String url = link + docsServlet + fileInfo;
 			

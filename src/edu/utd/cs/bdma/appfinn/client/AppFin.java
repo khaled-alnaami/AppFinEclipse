@@ -238,6 +238,12 @@ public class AppFin implements EntryPoint {
 		loginPanel.add(loginButtonPanel);
 		loginPanel.addStyleName("center");
 
+		// empty line seperator
+		loginButtonPanel.add(new HTML("<table><tr>"
+				+ "<td colspan=\"100\">"
+				+ "</td>"
+				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
+		
 		// setup caption and parent panels
 		loginCP.add(loginPanel);
 		loginCP.addStyleName("loginCP");
@@ -316,7 +322,7 @@ public class AppFin implements EntryPoint {
 		/** Home Tab **/
 
 		// setup home tab
-		tabs.insert(homePanel, "Home", 0);
+		tabs.insert(homePanel, "Download", 0);
 
 		// click handler for the Home tab
 		homeClickHandler();
@@ -354,7 +360,7 @@ public class AppFin implements EntryPoint {
 		homePanel.add(downloadButton);
 
 		// load home tab
-		tabs.selectTab(0);
+//		tabs.selectTab(0);
 
 		// add to main panel
 		mainPanel.add(tabs);
@@ -431,15 +437,20 @@ public class AppFin implements EntryPoint {
 		// done button response
 		doneButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				collectPanel.add(loadingPanel);
-				loadingPanel.setVisible(true);
-				tabs.setStyleName("pointer");
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					public void execute() {
-						onTesting();
+				if (selectedItems.size() == 0){
+					Window.alert("Please select some apps!");
+				} else {
+					collectPanel.add(loadingPanel);
+					loadingPanel.setVisible(true);
+					tabs.setStyleName("pointer");
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						public void execute() {
+							onTesting();
 
-					}
-				});
+						}
+					});					
+				}
+
 			}
 		});
 
@@ -673,6 +684,8 @@ public class AppFin implements EntryPoint {
 
 		PageAbout pageAbout = new PageAbout();
 		tabs.insert(pageAbout, "About", 4);
+		
+		tabs.selectTab(1); // showing Data Collection/Dynamic Analysis first after login
 	}
 
 	/**

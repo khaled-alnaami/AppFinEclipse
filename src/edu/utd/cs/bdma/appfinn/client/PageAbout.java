@@ -32,8 +32,14 @@ public class PageAbout extends Composite {
 							+ "</p>"
 							
 							+ "<p>"
-							+ "The tool facilitates Data Collection and Data Analytics. Data Collection enables the user to install <br> mobile apps, open them, and collect traces (as TCP packets). Such traces are used as input vectors <br> for Data Analytics where different machine learning algorithms can be applied."
-							+ "</p>"));
+							+ "The tool facilitates Data Collection/Dynamic Analysis and Data Analytics. Data Collection enables the user to install <br> mobile apps, open them, and collect traces (as TCP packets). Such traces are used as input vectors <br> for Data Analytics where different machine learning algorithms can be applied."
+							+ "</p>"
+
+							+ "<p>"
+							+ "Please send email to <b> dml.utd@gmail.com </b> for any comments or concenrs. Thank you."
+							+ "</p>"
+				
+				));
 		
 	
 	}
