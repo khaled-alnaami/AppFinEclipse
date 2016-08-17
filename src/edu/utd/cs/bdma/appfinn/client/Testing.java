@@ -2,6 +2,8 @@ package edu.utd.cs.bdma.appfinn.client;
 
 import java.util.Arrays;
 
+import com.google.gwt.dev.util.collect.HashMap;
+
 public class Testing {
 
 	public static void main(String[] args) {
@@ -33,9 +35,10 @@ public class Testing {
 		// System.out.println(url);
 		// System.out.println("&amp;");
 
-		String[] columnValues = new String[2];
+		final String[] columnValues = new String[2];
 		if (columnValues[0] != null)
 			System.out.println(Arrays.toString(columnValues));
+
 	}
 
 }

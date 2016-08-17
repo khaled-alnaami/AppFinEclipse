@@ -164,9 +164,9 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 		boolean validInsertOrUpdate = insertOrUpdate(sqlCmd);
 
 		String msg = "Dear New User, \n\nHere is your code: " + code
-				+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Analytics and Management Lab. \nComputer Science. \nUT Dallas.";
+				+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Management and Analytics Lab. \nComputer Science. \nUT Dallas.";
 
-		String subject = "Your code from the Big Data Analytics and Management Lab.";
+		String subject = "Your code from the Big Data Management and Analytics Lab.";
 		
 		sendEmail(link, emailto, subject, msg);
 
@@ -342,9 +342,9 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 			validEmail = true;
 			
 			String msg = "Dear User, \n\nHere is the data you requested:\nUsername: " + columnValues[0] + "\nPa$$w0rd: " + columnValues[1] + ""
-					+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Analytics and Management Lab. \nComputer Science. \nUT Dallas.";
+					+ " \n\nThank you. \nSmart Phone Apps Data Management. \nBig Data Management and Analytics Lab. \nComputer Science. \nUT Dallas.";
 
-			String subject = "Your data from the Big Data Analytics and Management Lab.";
+			String subject = "Your data from the Big Data Management and Analytics Lab.";
 						
 			sendEmail(link, email, subject, msg);
 		}

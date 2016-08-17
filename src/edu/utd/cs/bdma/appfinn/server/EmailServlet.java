@@ -3,6 +3,7 @@ package edu.utd.cs.bdma.appfinn.server;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -32,7 +33,48 @@ public class EmailServlet extends HttpServlet {
 		return;
 	}
 	
-	public static void sendEmail(String emailto, String subject, String msg){
+//	public static void sendEmail(String emailto, String subject, String msg){
+//		final String username = "dml.utd@gmail.com";
+//		final String password = "dml12345";
+//
+//		Properties props = new Properties();
+//		props.put("mail.smtp.auth", "true");
+//		props.put("mail.smtp.starttls.enable", "true");
+//		props.put("mail.smtp.host", "smtp.gmail.com");
+//		props.put("mail.smtp.port", "587");
+//
+//		Session session = Session.getInstance(props,
+//		  new javax.mail.Authenticator() {
+//			protected PasswordAuthentication getPasswordAuthentication() {
+//				return new PasswordAuthentication(username, password);
+//			}
+//		  });
+//
+//		try {
+//
+//			Message message = new MimeMessage(session);
+//			message.setFrom(new InternetAddress(username));
+//			message.setRecipients(Message.RecipientType.TO,
+//				InternetAddress.parse(emailto));
+//			message.setSubject(subject);
+//			message.setText(msg);
+//
+//			Transport.send(message);
+//
+//			System.out.println("Done");
+//
+//		} catch (MessagingException e) {
+//			System.out.println(e.getMessage());
+//		} catch (RuntimeException e) {
+//			System.out.println(e.getMessage());
+//		}
+//		catch (Exception e) {
+//			System.out.println(e.getMessage());
+//		}
+//	}
+//	
+	
+	public void sendEmail(String emailto, String subject, String msg){
 		final String username = "dml.utd@gmail.com";
 		final String password = "dml12345";
 
@@ -43,7 +85,7 @@ public class EmailServlet extends HttpServlet {
 		props.put("mail.smtp.port", "587");
 
 		Session session = Session.getInstance(props,
-		  new javax.mail.Authenticator() {
+		  new Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);
 			}
@@ -60,17 +102,21 @@ public class EmailServlet extends HttpServlet {
 
 			Transport.send(message);
 
-			System.out.println("Done");
+			System.out.println("Send Email Done");
 
 		} catch (MessagingException e) {
-			System.out.println(e.getMessage());
+			System.out.println("sendEmail MessagingException"+e.getMessage());
+			e.printStackTrace();
 		} catch (RuntimeException e) {
-			System.out.println(e.getMessage());
+			System.out.println("sendEmail RuntimeException"+e.getMessage());
+			e.printStackTrace();
 		}
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			System.out.println("sendEmail Exception"+e.getMessage());
+                
+            System.out.println(e.toString());
+            e.printStackTrace();
 		}
-	}
-	
+	}	
 	
 }

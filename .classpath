@@ -8,7 +8,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/home/varun/Downloads/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar"/>
 	<classpathentry kind="lib" path="/home/varun/Downloads/javax.mail.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
