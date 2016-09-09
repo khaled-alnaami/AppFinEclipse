@@ -282,7 +282,17 @@ public class PageNewUser extends Composite {
 
 			// regular expression
 			if (invalidFieldDetected()) {
-				Window.alert("Please fix data format in marked fields.");
+				String alertStr = "Please fix data format in marked fields.\n\n";
+				alertStr += "First Name, Last Name, and Username:\n";
+				alertStr += "--------------------\n";
+				alertStr += "Allowed: lower case, 0-9, underscore, or hyphen.\n";
+				alertStr += "Length: at least 3 characters and maximum length of 15.\n\n";
+				alertStr += "Password:\n";
+				alertStr += "---------\n";
+				alertStr += "Must contain a mix of: digits, lower case, upper case, and special characters.\n";
+				alertStr += "Length: at least 8 characters.";
+				
+				Window.alert(alertStr);
 				return false;
 			}
 

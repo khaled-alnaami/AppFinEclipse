@@ -6,7 +6,7 @@ import com.google.gwt.dev.util.collect.HashMap;
 
 public class Testing {
 
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		// TODO Auto-generated method stub
 		// NameValidator nameValidator = new NameValidator("name");
 		// String name = "khale";
@@ -36,7 +36,7 @@ public class Testing {
 		// System.out.println("&amp;");
 
 		final String[] columnValues = new String[2];
-		if (columnValues[0] != null)
+		if (columnValues[0] == null)
 			System.out.println(Arrays.toString(columnValues));
 
 	}

@@ -40,8 +40,9 @@ import edu.utd.cs.bdma.appfinn.client.User;
 public class MySQLConnection extends RemoteServiceServlet implements DBConnection {
 	private Connection conn = null;
 	private String status;
-	private String url = "jdbc:mysql://104.155.147.107/apps"; // url =
+	//private String url = "jdbc:mysql://104.155.147.107/apps"; // url =
 																// "jdbc:mysql://yourDBserver/yourDBname"
+	private String url = "jdbc:mysql://104.155.139.104/apps";
 	private String user = "root";
 	private String pass = "dml12345";
 
