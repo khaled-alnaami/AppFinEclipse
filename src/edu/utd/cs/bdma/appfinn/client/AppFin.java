@@ -575,10 +575,14 @@ public class AppFin implements EntryPoint {
 		testingTextBox.setText("4");
 		trialTextBox.setText("1");
 
+		// docs tab
+		StaticAnalysis staticAnalysisPage = new StaticAnalysis();
+		tabs.insert(staticAnalysisPage, "Static Analysis", 2);
+		
 		// setup analytics tab
 		analyticsPanel.add(analytics);
 		analyticsPanel.add(buttonPanel);
-		tabs.insert(analyticsPanel, "Data Analytics", 2);
+		tabs.insert(analyticsPanel, "Data Analytics", 3);
 
 		// collect response
 		analyticsButton.addClickHandler(new ClickHandler() {
@@ -680,10 +684,10 @@ public class AppFin implements EntryPoint {
 
 		// docs tab
 		PageDocs pageDocs = new PageDocs();
-		tabs.insert(pageDocs, "Documentation", 3);
+		tabs.insert(pageDocs, "Documentation", 4);
 
 		PageAbout pageAbout = new PageAbout();
-		tabs.insert(pageAbout, "About", 4);
+		tabs.insert(pageAbout, "About", 5);
 		
 		tabs.selectTab(1); // showing Data Collection/Dynamic Analysis first after login
 	}

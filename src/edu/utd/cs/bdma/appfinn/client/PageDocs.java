@@ -23,6 +23,7 @@ public class PageDocs extends Composite {
 	Anchor aUserManual;
 	Anchor aDyer;
 	Anchor aKhaled;
+	Anchor aKhaled2;
 	
 	
 	CaptionPanel docsCP = new CaptionPanel("Docs");
@@ -42,13 +43,19 @@ public class PageDocs extends Composite {
 		aDyer.addClickHandler(new aDyerClickHandler());
 		
 		aKhaled = new Anchor();
-		aKhaled.setHTML("<p> &nbsp; Paper: P2V: Effective Website Fingerprinting Using Vector Space Representations &nbsp; </p>");
+		aKhaled.setHTML("<p> &nbsp; Paper: Adaptive Encrypted Traffic Fingerprinting With Bi-Directional Dependence  &nbsp; </p>");
 		aKhaled.addClickHandler(new aKhaledClickHandler());
 		aKhaled.getElement().getStyle().setCursor(Cursor.POINTER); 
 	
+		aKhaled2 = new Anchor();
+		aKhaled2.setHTML("<p> &nbsp; Paper: P2V: Effective Website Fingerprinting Using Vector Space Representations &nbsp; </p>");
+		aKhaled2.addClickHandler(new aKhaled2ClickHandler());
+		aKhaled2.getElement().getStyle().setCursor(Cursor.POINTER); 
+		
 		vPanel.add(aUserManual);
-		vPanel.add(aDyer);
 		vPanel.add(aKhaled);
+		vPanel.add(aKhaled2);
+		vPanel.add(aDyer);
 				
 	}
 	
@@ -84,6 +91,21 @@ public class PageDocs extends Composite {
 	}
 	
 	private class aKhaledClickHandler implements ClickHandler {
+
+		@Override
+		public void onClick(ClickEvent event) {
+			String link = "http://"+Window.Location.getHostName()+":"+Window.Location.getPort()+"/appfin/";
+			String docsServlet = "downloadDocs";
+			String fileInfo = "?filename=ACSAC16_Traffic_Analysis.pdf";
+			
+			String url = link + docsServlet + fileInfo;
+			
+			Window.open( url, "_top", "status=0,toolbar=0,menubar=0,location=0");
+			
+		}
+	}
+	
+	private class aKhaled2ClickHandler implements ClickHandler {
 
 		@Override
 		public void onClick(ClickEvent event) {
