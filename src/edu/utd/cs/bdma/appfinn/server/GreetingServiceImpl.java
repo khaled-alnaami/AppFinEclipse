@@ -11,6 +11,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -89,8 +91,9 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		return inFromServerLine;
 	}
 	
-	public String[] getFileNames(){
-
+	// modified on 10/26/2016
+	public String[] getFileNames(String username){
+        /*
 		File folder = new File(getServletContext().getRealPath(fileLocation)); ///changed by sayeed
 //		File folder = new File(fileLocation);
 		File[] listOfFiles = folder.listFiles();
@@ -99,12 +102,33 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
 		int count = 0;
 		
 		for (File file : listOfFiles) {
-			fileNames[count] = file.getName();
-			count++;
+			// 10/26/2016
+			String[] fileNameList = file.getName().split("_");
+			if (fileNameList.length == 2 && username.equalsIgnoreCase(fileNameList[1])){
+				fileNames[count] = file.getName();
+				count++;
+			}
 		}
-		return fileNames;
+		*/
+		File folder = new File(getServletContext().getRealPath(fileLocation)); ///changed by sayeed
+//		File folder = new File(fileLocation);
+		File[] listOfFiles = folder.listFiles();
+		List<String> fileNames = new ArrayList<>();
+		
+		for (File file : listOfFiles) {
+			String[] fileNameList = file.getName().split("_");
+			if (fileNameList.length == 2 && username.equalsIgnoreCase(fileNameList[1])){
+				fileNames.add(file.getName());
+			}
+		}
+		
+		if (fileNames.size() == 0)
+			fileNames.add(""); // dummy empty string
 
-//		return new String[]{"inside the getFileNames zero","inside the getFileNames one"};
+		// convert the arraylist to a string array
+		String[] fileNamesArray = fileNames.toArray(new String[fileNames.size()]);
+		return fileNamesArray;
+
 	}
 
 	/**

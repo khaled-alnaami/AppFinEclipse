@@ -35,6 +35,8 @@ public class NameValidator {
 	   *	$                 # end-of-string
 	   */
 	  
+	  private static final String INT_PATTERN = "\\d+"; //"^[1-9]\\d*$"; //"[0-9]+";
+	  
 	  public NameValidator(String validationOption){
 	  
 		  switch(validationOption){
@@ -49,6 +51,9 @@ public class NameValidator {
 				  break;
 			  case "pass":
 				  pattern = RegExp.compile(PASS_PATTERN);
+				  break;
+			  case "int":
+				  pattern = RegExp.compile(INT_PATTERN);
 				  break;
 		  }	  
 		  

@@ -1,6 +1,7 @@
 package edu.utd.cs.bdma.appfinn.client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.google.gwt.http.client.Request;
 
@@ -11,13 +12,19 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Cursor;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasChangeHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
@@ -60,7 +67,7 @@ public class AppFin implements EntryPoint {
 	private CaptionPanel downloadCP = new CaptionPanel("Download Folder");
 	private CaptionPanel classifiersCP = new CaptionPanel("Classifier");
 	private CaptionPanel defensesCP = new CaptionPanel("Defense");
-	private CaptionPanel featuresCP = new CaptionPanel("Features");
+	private CaptionPanel featuresCP = new CaptionPanel("Bi-Directional Features");
 	private CaptionPanel datasetsCP = new CaptionPanel("Dataset");
 	private CaptionPanel bucketsCP = new CaptionPanel("Bucket Size");
 	private CaptionPanel appsCP = new CaptionPanel("Number of Apps");
@@ -184,6 +191,7 @@ public class AppFin implements EntryPoint {
 	PageForgotPassword pageForgotPassword = null;
 
 	ArrayList<TextBox> requiredControlsList = new ArrayList<TextBox>();
+	HashMap<Object, String> validControlList = new HashMap<Object, String>();
 
 	/**
 	 * Entry point method.
@@ -489,6 +497,8 @@ public class AppFin implements EntryPoint {
 		classifierList.addItem("Dyer VNG++", "15");
 		classifierList.addItem("Bi-Directional", "23");
 
+		classifierList.addChangeHandler(new classifierListChangeHandler());
+		
 		// Creates a drop down for defenses
 		defenseList.clear();
 		defenseList.addItem("Select a Defense", "-1");
@@ -514,7 +524,7 @@ public class AppFin implements EntryPoint {
 
 		// feature list
 		featureList.clear();
-		featureList.setMultipleSelect(true);
+		featureList.setMultipleSelect(true); // no a drop down list anymore
 		featureList.addItem("Packet Size");
 		featureList.addItem("Uniburst Size");
 		featureList.addItem("Uniburst Time");
@@ -523,6 +533,10 @@ public class AppFin implements EntryPoint {
 		featureList.addItem("Biburst Time");
 		featureList.addItem("ACK Packets");
 
+		// 10/28/2016, select Bi-Di features by default (except ACK Packets)
+		// loops through selected features
+		setFeatureList();
+		
 		// classifier panel
 		classifiersCP.add(classifierList);
 		featuresCP.add(featureList);
@@ -570,7 +584,7 @@ public class AppFin implements EntryPoint {
 		// testingTextBox.setText("0");
 		// trialTextBox.setText("0");
 		appTextBox.setText("2000");
-		bucketTextBox.setText("20");
+		bucketTextBox.setText("10");
 		trainingTextBox.setText("16");
 		testingTextBox.setText("4");
 		trialTextBox.setText("1");
@@ -584,7 +598,7 @@ public class AppFin implements EntryPoint {
 		analyticsPanel.add(buttonPanel);
 		tabs.insert(analyticsPanel, "Data Analytics", 3);
 
-		// collect response
+		// collect response. click Run in Data Analytics
 		analyticsButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				analyticsPanel.remove(errorPanel);
@@ -592,6 +606,12 @@ public class AppFin implements EntryPoint {
 				classifier = Integer.parseInt(classifierList.getSelectedValue());
 				defense = Integer.parseInt(defenseList.getSelectedValue());
 				dataset = Integer.parseInt(datasetList.getSelectedValue());
+				
+				// 10/27/2016 data validation
+
+				if (! validDataAnalyticsFields())
+					return;
+				
 				numApps = Integer.parseInt(appTextBox.getText().trim());
 				bucketSize = Integer.parseInt(bucketTextBox.getText().trim());
 				numTraining = Integer.parseInt(trainingTextBox.getText().trim());
@@ -654,19 +674,25 @@ public class AppFin implements EntryPoint {
 		// clears analytics input
 		clearAnalyticsButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				for (int i = 0; i < featureList.getItemCount(); i++) {
-					featureList.setItemSelected(i, false);
-				}
+
+				setFeatureList();
 
 				classifierList.setItemSelected(0, true);
 				defenseList.setItemSelected(0, true);
 				datasetList.setItemSelected(0, true);
 
-				appTextBox.setText("0");
-				bucketTextBox.setText("0");
-				trainingTextBox.setText("0");
-				testingTextBox.setText("0");
-				trialTextBox.setText("0");
+//				appTextBox.setText("0");
+//				bucketTextBox.setText("0");
+//				trainingTextBox.setText("0");
+//				testingTextBox.setText("0");
+//				trialTextBox.setText("0");
+				
+				// Oct 28, 2016
+				appTextBox.setText("2000");
+				bucketTextBox.setText("10");
+				trainingTextBox.setText("16");
+				testingTextBox.setText("4");
+				trialTextBox.setText("1");
 			}
 		});
 
@@ -689,6 +715,9 @@ public class AppFin implements EntryPoint {
 		PageAbout pageAbout = new PageAbout();
 		tabs.insert(pageAbout, "About", 5);
 		
+		PageAbout pageAbout2 = new PageAbout();
+		tabs.insert(pageAbout2, "About2", 6);
+		
 		tabs.selectTab(1); // showing Data Collection/Dynamic Analysis first after login
 	}
 
@@ -703,6 +732,8 @@ public class AppFin implements EntryPoint {
 			apps += each;
 			apps += ";";
 		}
+		// 10/26/16
+		apps += "_" + userTextBox.getText().trim(); // app1;app2;...;appn;_username
 		requestSocket(apps);
 
 	}
@@ -711,7 +742,7 @@ public class AppFin implements EntryPoint {
 	 * Runs test for data analytics.
 	 */
 	private void run() {
-
+		
 		// gets the corresponding feature index
 		if (concatFeatures.contains("Packet Size")) {
 			packetSize = 1;
@@ -739,7 +770,7 @@ public class AppFin implements EntryPoint {
 		call = "python mainBiDirectionLatest.py" + " -N " + numApps + " -k " + bucketSize + " -d " + dataset + " -C "
 				+ classifier + " -c " + defense + " -n " + numTrials + " -t " + numTraining + " -T " + numTesting
 				+ " -D " + packetSize + " -E " + uniBurstSize + " -F " + uniBurstTime + " -G " + uniBurstNumber + " -H "
-				+ biBurstSize + " -I " + biBurstTime + " -A " + ackPackets;
+				+ biBurstSize + " -I " + biBurstTime + " -A " + ackPackets + " -U " + userTextBox.getText().trim();
 
 		// start testing script, Khaled
 		testLabel = new Label("Script running: " + call);
@@ -907,9 +938,10 @@ public class AppFin implements EntryPoint {
 		}
 	}
 
-	// To get pcap folder names
+	// To get pcap and output folder names
+	// modified 10/26/2016
 	void getFolderNames() {
-		greetingService.getFileNames(new AsyncCallback<String[]>() {
+		greetingService.getFileNames(userTextBox.getText().trim(), new AsyncCallback<String[]>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
@@ -935,9 +967,14 @@ public class AppFin implements EntryPoint {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
 				// TODO Auto-generated method stub
+				// Download tab
 				if (event.getSelectedItem() == 0) {
 					// Code
 					getFolderNames();
+				} 
+				// Data Analytics tab
+				else if (event.getSelectedItem() == 3){
+					clearAnalyticsButton.click();
 				}
 
 			}
@@ -1078,5 +1115,77 @@ public class AppFin implements EntryPoint {
 		}
 
 		return true;
+	}
+	
+	public boolean validDataAnalyticsFields(){
+		requiredControlsList = new ArrayList<TextBox>();
+		requiredControlsList.add(appTextBox);
+		requiredControlsList.add(bucketTextBox);
+		requiredControlsList.add(trialTextBox);
+		requiredControlsList.add(trainingTextBox);
+		requiredControlsList.add(testingTextBox);
+
+		if (Utils.CheckRequiredField(requiredControlsList)) {
+			Window.alert("Please fill in required fields.");
+			return false;
+		}
+		
+		// validate numbers
+		validControlList = new HashMap<Object, String>();
+		
+		validControlList.put(appTextBox, "int");
+		validControlList.put(bucketTextBox, "int");
+		validControlList.put(trialTextBox, "int");
+		validControlList.put(trainingTextBox, "int");
+		validControlList.put(testingTextBox, "int");
+		
+		if (Utils.CheckValidField(validControlList)) { // returns true if invalid data detected
+			Window.alert("Please fix highlighted fields.");
+			return false;
+		}
+		
+		// validate range in textboxes
+		validControlList = new HashMap<Object, String>();
+		
+		validControlList.put(appTextBox, "10_2000");
+		validControlList.put(bucketTextBox, "2_10");
+		validControlList.put(trialTextBox, "1_1");
+		validControlList.put(trainingTextBox, "1_16");
+		validControlList.put(testingTextBox, "1_4");		
+
+		if (Utils.CheckNumberRange(validControlList)) { // returns true if invalid data detected
+			Window.alert("Please fix highlighted fields. Field ranges: (10 <= Number of Apps <= 2000) (2 <= Bucket Size <= 10) (Trials = 1) (1  <= Num Train Inst <= 16) (1  <= Num Test Inst <= 4)");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+	private class classifierListChangeHandler implements ChangeHandler {
+
+		public void onChange(ChangeEvent event) {
+			// TODO Auto-generated method stub
+			if (classifierList.getSelectedValue() == "23"){
+				setFeatureList();
+				featureList.setEnabled(true);
+			}				
+			else
+				featureList.setEnabled(false);
+			
+		}
+	}
+	
+	public void setFeatureList(){
+		// 10/28/2016, select Bi-Di features by default (except ACK Packets)
+		// loops through selected features
+		for (int i = 0; i < featureList.getItemCount(); i++) {
+			//featureList.setItemSelected(i, false);
+			featureList.setItemSelected(i, true);
+			
+			// ACK Packets
+			if (i == featureList.getItemCount() - 1)
+				featureList.setItemSelected(i, false);
+		}
 	}
 }

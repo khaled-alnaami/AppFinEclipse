@@ -8,5 +8,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface GreetingServiceAsync {
 	void greetServer(String input, AsyncCallback<String> callback) throws IllegalArgumentException;
 
-	void getFileNames(AsyncCallback<String[]> callback);
+	void getFileNames(String username, AsyncCallback<String[]> callback);
 }

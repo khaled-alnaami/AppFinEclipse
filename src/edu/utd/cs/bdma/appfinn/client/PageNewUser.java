@@ -336,7 +336,7 @@ public class PageNewUser extends Composite {
 				}
 
 			});
-
+			
 			// newUserPanel.setVisible(false);
 			// loadingImagePanel.setVisible(true);
 
