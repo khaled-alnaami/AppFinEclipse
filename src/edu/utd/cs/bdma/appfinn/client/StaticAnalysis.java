@@ -100,7 +100,8 @@ public class StaticAnalysis extends Composite {
 		//Username = username;
 		//Password = pass;
 		
-		getUserDetails(Username, Password);		
+		// Amir comment one line
+		//getUserDetails(Username, Password);		
 		vPanel.add(aUserManual);
 				
 	}

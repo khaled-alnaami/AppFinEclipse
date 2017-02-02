@@ -107,6 +107,7 @@ public class AppFin implements EntryPoint {
 	private TextBox trialTextBox = new TextBox();
 	private TextBox trainingTextBox = new TextBox();
 	private TextBox testingTextBox = new TextBox();
+	public static TextBox UserIDTextBox = new TextBox();
 
 	private Button loginButton = new Button("Login");
 	private Button downloadButton = new Button("Download");
@@ -270,6 +271,10 @@ public class AppFin implements EntryPoint {
 		aForgotPassword.getElement().getStyle().setCursor(Cursor.POINTER);
 		loginButtonPanel.add(aForgotPassword);
 
+		// used for getting userID
+				UserIDTextBox.setVisible(false);
+				loginParentPanel.add(UserIDTextBox);
+		
 		// Associate the Main panel with the HTML host page.
 		RootPanel.get("test").add(loginParentPanel);
 
@@ -715,8 +720,9 @@ public class AppFin implements EntryPoint {
 		PageAbout pageAbout = new PageAbout();
 		tabs.insert(pageAbout, "About", 5);
 		
-		PageAbout pageAbout2 = new PageAbout();
-		tabs.insert(pageAbout2, "About2", 6);
+		// for survey tabs
+				PageSurvey pagesurvey = new PageSurvey();
+				tabs.insert(pagesurvey, "Survey", 6);
 		
 		tabs.selectTab(1); // showing Data Collection/Dynamic Analysis first after login
 	}
@@ -995,6 +1001,7 @@ public class AppFin implements EntryPoint {
 				if (user.isGrantAcecss() == true) {
 					RootPanel.get("test").remove(loginParentPanel);
 					onTabs();
+					UserIDTextBox.setText(Integer.toString(user.getUserID()));
 				} else {
 					Window.alert("Not a valid username or password.");
 					Window.Location.reload();

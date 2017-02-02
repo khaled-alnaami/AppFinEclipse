@@ -1,5 +1,7 @@
 package edu.utd.cs.bdma.appfinn.client;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
@@ -10,5 +12,7 @@ public interface DBConnectionAsync {
 	public void checkRecord(String sqlCmd, AsyncCallback<Boolean> callback);
 	public void getFields(String sqlCmd, String [] columnNames, AsyncCallback<String[]> callback);
 	public void checkRecordSendEmail(String email, String link, AsyncCallback<Boolean> callback);
+	public void getFieldsSurvey(String sqlCmd, AsyncCallback<List<Question>> callback);
+	public void InsertAllRecords(int UserID, List<Question> AllAnswers, AsyncCallback<Boolean> callback);
 	
 }

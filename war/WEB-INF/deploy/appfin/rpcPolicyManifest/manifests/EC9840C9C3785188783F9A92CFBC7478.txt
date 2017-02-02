@@ -1,2 +1,0 @@
-serviceClass: edu.utd.cs.bdma.appfinn.client.DBConnection
-path: F8FDE95E7CE00D789298397C0C1476C5.gwt.rpc

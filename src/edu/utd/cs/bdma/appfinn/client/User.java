@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class User implements IsSerializable {
 	private String username;
 	private String password;
+	private int userID;
 	private boolean grantAccess;
 
 	@SuppressWarnings("unused")
@@ -24,6 +25,14 @@ public class User implements IsSerializable {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public int getUserID() {
+		return userID;
+	}
+
+	public void setUserID(int userID) {
+		this.userID = userID;
 	}
 
 	public String getPassword() {
