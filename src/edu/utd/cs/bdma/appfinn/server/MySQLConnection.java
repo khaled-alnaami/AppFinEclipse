@@ -36,6 +36,8 @@ import edu.utd.cs.bdma.appfinn.client.Question;
 import edu.utd.cs.bdma.appfinn.client.DBConnection;
 import edu.utd.cs.bdma.appfinn.client.User;
 
+import edu.utd.cs.bdma.appfinn.client.SurevyStats;
+
 /**
  * The server-side implementation of the RPC service.
  */
@@ -43,7 +45,7 @@ import edu.utd.cs.bdma.appfinn.client.User;
 public class MySQLConnection extends RemoteServiceServlet implements DBConnection {
 	private Connection conn = null;
 	private String status;
-	//private String url = "jdbc:mysql://104.155.147.107/apps"; // url =
+	// private String url = "jdbc:mysql://104.155.147.107/apps"; // url =
 	// "jdbc:mysql://yourDBserver/yourDBname"
 	private String url = "jdbc:mysql://104.155.139.104/apps";
 	private String user = "root";
@@ -105,6 +107,9 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 				// user.getPassword().equals(pass)){
 				// validUser = true;
 				// }
+				// changes for survey admin page
+				System.out.println("admin level: " + result.getString("AdminLevel"));
+				user.setAdminLevel(result.getString("AdminLevel"));
 			}
 			result.close();
 			ps.close();
@@ -382,9 +387,9 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 			PreparedStatement ps = conn.prepareStatement(sqlCmd);
 			ResultSet result = ps.executeQuery();
 			while (result.next()) {
-				
+
 				int ID = result.getInt("QID");
-				
+
 				System.out.println("QID " + Integer.toString(ID));
 				String Type = result.getString("QType");
 				System.out.println("Qtype " + Type);
@@ -445,6 +450,121 @@ public class MySQLConnection extends RemoteServiceServlet implements DBConnectio
 
 		return finalIndicator;
 
+	}
+
+	// get survey statistics from table
+	public List<SurevyStats> getSurveyStatistics(String sqlCmd) {
+
+		List<SurevyStats> list = new ArrayList<SurevyStats>();
+
+		try {
+
+			conn = DriverManager.getConnection(url, this.user, this.pass);
+			System.out.println("Connection " + conn.toString());
+			System.out.println("SQL Query " + sqlCmd);
+			PreparedStatement ps = conn.prepareStatement(sqlCmd);
+			ResultSet result = ps.executeQuery();
+			while (result.next()) {
+
+				String qId = result.getString(1);
+				String qText = result.getString(2);
+				String option = result.getString(3);
+				int count = result.getInt(4);
+
+				SurevyStats details = new SurevyStats(qId, qText, option, count);
+				list.add(details);
+			}
+			// System.out.println("outside try");
+			result.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			// do stuff on fail
+			System.out.println(sqle.toString());
+			sqle.printStackTrace();
+		} catch (Exception e) {
+
+			System.out.println(e.toString());
+			e.printStackTrace();
+
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+			}
+		}
+		return list;
+	}
+
+	// get admin level from user table
+	public String getAdminLevel(String sqlCmd) {
+
+		String alevel = null;
+		try {
+
+			conn = DriverManager.getConnection(url, this.user, this.pass);
+			System.out.println("Connection " + conn.toString());
+			PreparedStatement ps = conn.prepareStatement(sqlCmd);
+			ResultSet result = ps.executeQuery();
+			alevel = result.getString(1);
+			System.out.println("level  " + result.toString() + "    " + result.getString(1));
+
+			result.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			// do stuff on fail
+			System.out.println(sqle.toString());
+			sqle.printStackTrace();
+		} catch (Exception e) {
+
+			System.out.println(e.toString());
+			e.printStackTrace();
+
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		return alevel;
+	}
+
+	// get one integer value
+	public String getSingleIntValue(String sqlCmd) {
+
+		// String alevel = null;
+		String count = null;
+		try {
+
+			conn = DriverManager.getConnection(url, this.user, this.pass);
+			System.out.println("Connection " + conn.toString());
+			PreparedStatement ps = conn.prepareStatement(sqlCmd);
+			ResultSet result = ps.executeQuery();
+			// alevel = result.getString(1);
+			if (result.next()) {
+				count = String.valueOf(result.getInt(1));
+				// System.out.println("level "+result.toString()+"
+				// "+result.getString(1));
+			}
+			result.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			// do stuff on fail
+			System.out.println(sqle.toString());
+			sqle.printStackTrace();
+		} catch (Exception e) {
+
+			System.out.println(e.toString());
+			e.printStackTrace();
+
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+			}
+		}
+
+		return count;
 	}
 
 }

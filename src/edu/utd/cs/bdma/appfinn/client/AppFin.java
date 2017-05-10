@@ -137,7 +137,7 @@ public class AppFin implements EntryPoint {
 	private Label numTrialsLabel = new Label("Trials");
 
 	private Label collectionProgress = new Label("Progress ..."); // Khaled
-//	private Label analyticsReplyLabel = null;
+	// private Label analyticsReplyLabel = null;
 
 	private ListBox folderList = new ListBox();
 	private ListBox appList = new ListBox();
@@ -194,6 +194,14 @@ public class AppFin implements EntryPoint {
 	ArrayList<TextBox> requiredControlsList = new ArrayList<TextBox>();
 	HashMap<Object, String> validControlList = new HashMap<Object, String>();
 
+	// retrived admin level
+	String adminLevel;
+
+	// survey statistics
+	Button generateCodeBtn = new Button("Generate Code");
+
+	PageSurveyAdminTab surveyadmin = new PageSurveyAdminTab();
+	
 	/**
 	 * Entry point method.
 	 */
@@ -209,18 +217,13 @@ public class AppFin implements EntryPoint {
 
 		setStyle();
 
-		
-		loginTextPanel.add(new HTML("<table><tr>"
-			+ "<td class=\"tds\" colspan=\"100\">"
-			+ "<image src='images/secure_key.jpg'></image></td>"
-			+ "</tr></table>"));
-		
+		loginTextPanel.add(new HTML("<table><tr>" + "<td class=\"tds\" colspan=\"100\">"
+				+ "<image src='images/secure_key.jpg'></image></td>" + "</tr></table>"));
+
 		// empty line seperator
-		loginTextPanel.add(new HTML("<table><tr>"
-				+ "<td colspan=\"100\">"
-				+ "</td>"
+		loginTextPanel.add(new HTML("<table><tr>" + "<td colspan=\"100\">" + "</td>"
 				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
-		
+
 		userGrid.setWidget(0, 0, userLabel);
 		userGrid.setWidget(0, 1, userTextBox);
 		userGrid.setWidget(1, 0, passLabel);
@@ -228,18 +231,16 @@ public class AppFin implements EntryPoint {
 
 		// setup login panel
 		loginTextPanel.add(userGrid);
-		
+
 		// empty line seperator
-		loginTextPanel.add(new HTML("<table><tr>"
-				+ "<td colspan=\"100\">"
-				+ "</td>"
+		loginTextPanel.add(new HTML("<table><tr>" + "<td colspan=\"100\">" + "</td>"
 				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
-		
-//		loginTextPanel.add(passPanel);
+
+		// loginTextPanel.add(passPanel);
 		loginTextPanel.addStyleName("center");
 
 		loginButton.addStyleDependentName("login");
-//		loginButton.setStyleName("Button_White");
+		// loginButton.setStyleName("Button_White");
 		loginButtonPanel.add(loginButton);
 		loginButtonPanel.addStyleName("center");
 
@@ -248,11 +249,9 @@ public class AppFin implements EntryPoint {
 		loginPanel.addStyleName("center");
 
 		// empty line seperator
-		loginButtonPanel.add(new HTML("<table><tr>"
-				+ "<td colspan=\"100\">"
-				+ "</td>"
+		loginButtonPanel.add(new HTML("<table><tr>" + "<td colspan=\"100\">" + "</td>"
 				+ "</tr><tr></tr><tr></tr><tr></tr><tr></tr></table>"));
-		
+
 		// setup caption and parent panels
 		loginCP.add(loginPanel);
 		loginCP.addStyleName("loginCP");
@@ -264,7 +263,7 @@ public class AppFin implements EntryPoint {
 		aNewUser.addClickHandler(new aNewUserClickHandler(this));
 		aNewUser.getElement().getStyle().setCursor(Cursor.POINTER);
 		loginButtonPanel.add(aNewUser);
-		
+
 		// forgot password
 		aForgotPassword.setHTML("<p> Forgot Password? </p>");
 		aForgotPassword.addClickHandler(new aForgotPasswordClickHandler(this));
@@ -272,9 +271,9 @@ public class AppFin implements EntryPoint {
 		loginButtonPanel.add(aForgotPassword);
 
 		// used for getting userID
-				UserIDTextBox.setVisible(false);
-				loginParentPanel.add(UserIDTextBox);
-		
+		UserIDTextBox.setVisible(false);
+		loginParentPanel.add(UserIDTextBox);
+
 		// Associate the Main panel with the HTML host page.
 		RootPanel.get("test").add(loginParentPanel);
 
@@ -373,7 +372,7 @@ public class AppFin implements EntryPoint {
 		homePanel.add(downloadButton);
 
 		// load home tab
-//		tabs.selectTab(0);
+		// tabs.selectTab(0);
 
 		// add to main panel
 		mainPanel.add(tabs);
@@ -450,7 +449,7 @@ public class AppFin implements EntryPoint {
 		// done button response
 		doneButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if (selectedItems.size() == 0){
+				if (selectedItems.size() == 0) {
 					Window.alert("Please select some apps!");
 				} else {
 					collectPanel.add(loadingPanel);
@@ -461,7 +460,7 @@ public class AppFin implements EntryPoint {
 							onTesting();
 
 						}
-					});					
+					});
 				}
 
 			}
@@ -503,7 +502,7 @@ public class AppFin implements EntryPoint {
 		classifierList.addItem("Bi-Directional", "23");
 
 		classifierList.addChangeHandler(new classifierListChangeHandler());
-		
+
 		// Creates a drop down for defenses
 		defenseList.clear();
 		defenseList.addItem("Select a Defense", "-1");
@@ -541,7 +540,7 @@ public class AppFin implements EntryPoint {
 		// 10/28/2016, select Bi-Di features by default (except ACK Packets)
 		// loops through selected features
 		setFeatureList();
-		
+
 		// classifier panel
 		classifiersCP.add(classifierList);
 		featuresCP.add(featureList);
@@ -597,7 +596,7 @@ public class AppFin implements EntryPoint {
 		// docs tab
 		StaticAnalysis staticAnalysisPage = new StaticAnalysis();
 		tabs.insert(staticAnalysisPage, "Static Analysis", 2);
-		
+
 		// setup analytics tab
 		analyticsPanel.add(analytics);
 		analyticsPanel.add(buttonPanel);
@@ -611,12 +610,12 @@ public class AppFin implements EntryPoint {
 				classifier = Integer.parseInt(classifierList.getSelectedValue());
 				defense = Integer.parseInt(defenseList.getSelectedValue());
 				dataset = Integer.parseInt(datasetList.getSelectedValue());
-				
+
 				// 10/27/2016 data validation
 
-				if (! validDataAnalyticsFields())
+				if (!validDataAnalyticsFields())
 					return;
-				
+
 				numApps = Integer.parseInt(appTextBox.getText().trim());
 				bucketSize = Integer.parseInt(bucketTextBox.getText().trim());
 				numTraining = Integer.parseInt(trainingTextBox.getText().trim());
@@ -686,12 +685,12 @@ public class AppFin implements EntryPoint {
 				defenseList.setItemSelected(0, true);
 				datasetList.setItemSelected(0, true);
 
-//				appTextBox.setText("0");
-//				bucketTextBox.setText("0");
-//				trainingTextBox.setText("0");
-//				testingTextBox.setText("0");
-//				trialTextBox.setText("0");
-				
+				// appTextBox.setText("0");
+				// bucketTextBox.setText("0");
+				// trainingTextBox.setText("0");
+				// testingTextBox.setText("0");
+				// trialTextBox.setText("0");
+
 				// Oct 28, 2016
 				appTextBox.setText("2000");
 				bucketTextBox.setText("10");
@@ -719,12 +718,59 @@ public class AppFin implements EntryPoint {
 
 		PageAbout pageAbout = new PageAbout();
 		tabs.insert(pageAbout, "About", 5);
-		
+
 		// for survey tabs
-				PageSurvey pagesurvey = new PageSurvey();
-				tabs.insert(pagesurvey, "Survey", 6);
-		
-		tabs.selectTab(1); // showing Data Collection/Dynamic Analysis first after login
+		PageSurvey pagesurvey = new PageSurvey();
+		tabs.insert(pagesurvey, "Survey", 6);
+
+		// for survey admin tab Srabonti
+
+		//PageSurveyAdminTab surveyadmin = new PageSurveyAdminTab(); // khaled
+		// String al = checkUserAccess();
+
+		// Window.alert("admin level: "+adminLevel);
+		if (adminLevel.trim().equals("1")) {
+			tabs.insert(surveyadmin, "Survey Statistics", 7);
+		}
+
+		tabs.selectTab(1); // showing Data Collection/Dynamic Analysis first
+							// after login
+	}
+
+	// Srabonti: this is a method which checks the user access from the user
+	// table
+	// if user has admin rights the survey admin page will be displayed for the
+	// user
+
+	private String checkUserAccess() {
+		// TODO Auto-generated method stub
+
+		final String user = userTextBox.getText().trim();
+		final String pass = passTextBox.getValue().trim();
+
+		String al = null;
+		String sqlCmd = "select AdminLevel from tblUser where UserName = '" + user + "' and UserPassword = '" + pass
+				+ "';";
+		String columnNames[] = { "AdminLevel" };
+		rpcDB.getFields(sqlCmd, columnNames, new AsyncCallback<String[]>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert("Database connection failure! Please contact admin!");
+			}
+
+			@Override
+			public void onSuccess(String[] result) {
+				// TODO Auto-generated method stub
+				adminLevel = result[0];
+				Window.alert("1:  " + adminLevel);
+
+			}
+		});
+		Window.alert("2:   " + adminLevel);
+
+		return adminLevel;
+
 	}
 
 	/**
@@ -748,7 +794,7 @@ public class AppFin implements EntryPoint {
 	 * Runs test for data analytics.
 	 */
 	private void run() {
-		
+
 		// gets the corresponding feature index
 		if (concatFeatures.contains("Packet Size")) {
 			packetSize = 1;
@@ -977,16 +1023,20 @@ public class AppFin implements EntryPoint {
 				if (event.getSelectedItem() == 0) {
 					// Code
 					getFolderNames();
-				} 
+				}
 				// Data Analytics tab
-				else if (event.getSelectedItem() == 3){
+				else if (event.getSelectedItem() == 3) {
 					clearAnalyticsButton.click();
+				}
+				// Survey Admin. khaled May 10, 2017
+				else if (event.getSelectedItem() == 7) {
+					surveyadmin.fetchSurveyAnswerDetails();
 				}
 
 			}
 		});
 	}
-
+	
 	void authinticateUser(String user, String pass) {
 		rpcDB.authenticateUser(user, pass, new AsyncCallback<User>() {
 			@Override
@@ -1000,8 +1050,12 @@ public class AppFin implements EntryPoint {
 				// TODO Auto-generated method stub
 				if (user.isGrantAcecss() == true) {
 					RootPanel.get("test").remove(loginParentPanel);
+					//changes for survey admin page
+					//Window.alert("admin level 1: " + user.getAdminLevel());
+					adminLevel = user.getAdminLevel();		//srabonti: survey stats
 					onTabs();
 					UserIDTextBox.setText(Integer.toString(user.getUserID()));
+					
 				} else {
 					Window.alert("Not a valid username or password.");
 					Window.Location.reload();
@@ -1052,9 +1106,9 @@ public class AppFin implements EntryPoint {
 
 		}
 	}
-	
+
 	private void setStyle() {
-		
+
 		// textboxes
 		userTextBox.setStyleName("TextBox");
 		passTextBox.setStyleName("TextBox");
@@ -1063,8 +1117,7 @@ public class AppFin implements EntryPoint {
 		trialTextBox.setStyleName("TextBox");
 		trainingTextBox.setStyleName("TextBox");
 		testingTextBox.setStyleName("TextBox");
-		
-		
+
 		// labels
 		userLabel.setStyleName("Labels");
 		passLabel.setStyleName("Labels");
@@ -1081,32 +1134,32 @@ public class AppFin implements EntryPoint {
 		numTrialsLabel.setStyleName("Labels");
 
 		collectionProgress.setStyleName("Labels");
-		
+
 		// buttons
 		loginButton.setStyleName("Button_White");
 		loginButton.getElement().getStyle().setCursor(Cursor.POINTER);
-	
+
 		downloadButton.setStyleName("Button_White");
 		downloadButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 		refreshButton.setStyleName("Button_White");
 		refreshButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 		addAppButton.setStyleName("Button_White");
 		addAppButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 		doneButton.setStyleName("Button_White");
 		doneButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 		analyticsButton.setStyleName("Button_White");
 		analyticsButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 		clearButton.setStyleName("Button_White");
 		clearButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 		clearAnalyticsButton.setStyleName("Button_White");
 		clearAnalyticsButton.getElement().getStyle().setCursor(Cursor.POINTER);
-		
+
 	}
 
 	public boolean validateData() {
@@ -1123,8 +1176,8 @@ public class AppFin implements EntryPoint {
 
 		return true;
 	}
-	
-	public boolean validDataAnalyticsFields(){
+
+	public boolean validDataAnalyticsFields() {
 		requiredControlsList = new ArrayList<TextBox>();
 		requiredControlsList.add(appTextBox);
 		requiredControlsList.add(bucketTextBox);
@@ -1136,60 +1189,61 @@ public class AppFin implements EntryPoint {
 			Window.alert("Please fill in required fields.");
 			return false;
 		}
-		
+
 		// validate numbers
 		validControlList = new HashMap<Object, String>();
-		
+
 		validControlList.put(appTextBox, "int");
 		validControlList.put(bucketTextBox, "int");
 		validControlList.put(trialTextBox, "int");
 		validControlList.put(trainingTextBox, "int");
 		validControlList.put(testingTextBox, "int");
-		
-		if (Utils.CheckValidField(validControlList)) { // returns true if invalid data detected
+
+		if (Utils.CheckValidField(validControlList)) { // returns true if
+														// invalid data detected
 			Window.alert("Please fix highlighted fields.");
 			return false;
 		}
-		
+
 		// validate range in textboxes
 		validControlList = new HashMap<Object, String>();
-		
+
 		validControlList.put(appTextBox, "10_2000");
 		validControlList.put(bucketTextBox, "2_10");
 		validControlList.put(trialTextBox, "1_1");
 		validControlList.put(trainingTextBox, "1_16");
-		validControlList.put(testingTextBox, "1_4");		
+		validControlList.put(testingTextBox, "1_4");
 
-		if (Utils.CheckNumberRange(validControlList)) { // returns true if invalid data detected
-			Window.alert("Please fix highlighted fields. Field ranges: (10 <= Number of Apps <= 2000) (2 <= Bucket Size <= 10) (Trials = 1) (1  <= Num Train Inst <= 16) (1  <= Num Test Inst <= 4)");
+		if (Utils.CheckNumberRange(validControlList)) { // returns true if
+														// invalid data detected
+			Window.alert(
+					"Please fix highlighted fields. Field ranges: (10 <= Number of Apps <= 2000) (2 <= Bucket Size <= 10) (Trials = 1) (1  <= Num Train Inst <= 16) (1  <= Num Test Inst <= 4)");
 			return false;
 		}
-		
+
 		return true;
 	}
-	
-	
+
 	private class classifierListChangeHandler implements ChangeHandler {
 
 		public void onChange(ChangeEvent event) {
 			// TODO Auto-generated method stub
-			if (classifierList.getSelectedValue() == "23"){
+			if (classifierList.getSelectedValue() == "23") {
 				setFeatureList();
 				featureList.setEnabled(true);
-			}				
-			else
+			} else
 				featureList.setEnabled(false);
-			
+
 		}
 	}
-	
-	public void setFeatureList(){
+
+	public void setFeatureList() {
 		// 10/28/2016, select Bi-Di features by default (except ACK Packets)
 		// loops through selected features
 		for (int i = 0; i < featureList.getItemCount(); i++) {
-			//featureList.setItemSelected(i, false);
+			// featureList.setItemSelected(i, false);
 			featureList.setItemSelected(i, true);
-			
+
 			// ACK Packets
 			if (i == featureList.getItemCount() - 1)
 				featureList.setItemSelected(i, false);

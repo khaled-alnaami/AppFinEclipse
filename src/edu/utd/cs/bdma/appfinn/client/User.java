@@ -7,6 +7,7 @@ public class User implements IsSerializable {
 	private String password;
 	private int userID;
 	private boolean grantAccess;
+	private String adminLevel; // survey admin page
 
 	@SuppressWarnings("unused")
 	private User() {
@@ -26,7 +27,7 @@ public class User implements IsSerializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	
+
 	public int getUserID() {
 		return userID;
 	}
@@ -49,5 +50,14 @@ public class User implements IsSerializable {
 
 	public void setGrantAccess(boolean grantAcess) {
 		this.grantAccess = grantAcess;
+	}
+
+	// changes for survey admin page
+	public String getAdminLevel() {
+		return adminLevel;
+	}
+
+	public void setAdminLevel(String adminLevel) {
+		this.adminLevel = adminLevel;
 	}
 }

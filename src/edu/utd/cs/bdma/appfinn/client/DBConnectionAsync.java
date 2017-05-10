@@ -15,4 +15,7 @@ public interface DBConnectionAsync {
 	public void getFieldsSurvey(String sqlCmd, AsyncCallback<List<Question>> callback);
 	public void InsertAllRecords(int UserID, List<Question> AllAnswers, AsyncCallback<Boolean> callback);
 	
+	public void getSurveyStatistics(String sqlCmd, AsyncCallback<List<SurevyStats>> callback);
+	public void getSingleIntValue(String sqlCmd, AsyncCallback<String> callback);
+	
 }

@@ -20,4 +20,8 @@ public interface DBConnection extends RemoteService {
 	
 	public List<Question> getFieldsSurvey(String sqlCmd);
 	public Boolean  InsertAllRecords ( int UserID, List<Question> AllAnswers);
+	
+	//for user admin page
+	List<SurevyStats> getSurveyStatistics(String sqlCmd);
+	String getSingleIntValue(String sqlCmd);
 }
