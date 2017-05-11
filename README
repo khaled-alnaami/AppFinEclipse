@@ -1,0 +1,23 @@
+With the recent emergence of mobile platforms capable of executing increasingly complex
+software and the rising ubiquity of such platforms in sensitive domains such as banking, military
+operations, healthcare, and law enforcement, user privacy and data security have become
+major concerns. This attracted researchers to study various methods to perform Traffic Analysis
+(TA) on mobile apps that connect to remote hosts or app servers through cloud service
+providers.
+
+The focus of this project is to identify an app (e.g. a bank app) by listening to the encrypted TCP
+traffic. The attacker passively gathers encrypted packets, extracts
+features, and uses data analytics/machine learning to predict the name of the app. This is
+​ known as App Fingerprinting, where attacker can gain information that negatively affects the
+peace and security of the end users or the general population at large. It is important to note
+that the app server IP address cannot be used to reveal the name of the app as multiple apps
+may be hosted on the same cloud server with the same IP.
+
+
+Big Data Management and Analytics Lab
+Computer Science
+Smart Phone Apps Data Management
+
+Khaled Al-Naami
+PhD Candidate
+khalednaami@gmail.com
